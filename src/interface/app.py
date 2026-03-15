@@ -1,10 +1,13 @@
 """Interface web do Jarvis Personal Trainer — aplicação Streamlit com anamnese híbrida."""
 import sys
 import os
+import logging
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 import streamlit as st
+
+logger = logging.getLogger(__name__)
 
 from src.config.settings import Settings
 from src.retrieval.searcher import SemanticSearcher
@@ -74,6 +77,9 @@ if "historico_conversa" not in st.session_state:
 
 if "rodadas_followup" not in st.session_state:
     st.session_state["rodadas_followup"] = 0
+
+if "ultimas_fontes" not in st.session_state:
+    st.session_state["ultimas_fontes"] = []
 
 # ---------------------------------------------------------------------------
 # ESTADO 1: Anamnese
@@ -184,7 +190,9 @@ elif st.session_state["estado"] == "resposta":
             st.markdown(mensagem["content"])
             st.divider()
 
-    # Só processa se a última mensagem for do usuário (precisa de resposta)
+    # Recupera fontes da última resposta (antes de processar nova mensagem)
+    ultimas_fontes = st.session_state.get("ultimas_fontes", [])
+
     historico = st.session_state["historico_conversa"]
     ultima_mensagem = historico[-1] if historico else None
 
@@ -206,50 +214,58 @@ elif st.session_state["estado"] == "resposta":
                     contexto_aluno=st.session_state["contexto_aluno"],
                 )
 
-            # Adiciona resposta ao histórico
+            # Adiciona resposta ao histórico e armazena fontes no session_state
             historico.append({"role": "assistant", "content": resposta.texto})
             st.session_state["historico_conversa"] = historico
-
-            st.markdown(resposta.texto)
-
-            if resposta.fontes:
-                st.markdown("**Fontes consultadas:**")
-                for fonte in resposta.fontes:
-                    st.markdown(f"- {fonte}")
-
-            st.divider()
-
-            # Detecta se o LLM fez pergunta de follow-up (máx. 3 rodadas)
-            rodadas = st.session_state["rodadas_followup"]
-            fez_pergunta = "?" in resposta.texto[-300:]
-
-            if fez_pergunta and rodadas < 3:
-                followup = st.text_area(
-                    "Responda para que eu possa personalizar melhor o treino:",
-                    key=f"followup_{rodadas}",
-                    height=80,
-                )
-                if st.button("Responder", key=f"btn_followup_{rodadas}"):
-                    if followup.strip():
-                        historico.append({"role": "user", "content": followup.strip()})
-                        st.session_state["historico_conversa"] = historico
-                        st.session_state["rodadas_followup"] = rodadas + 1
-                        st.rerun()
-            else:
-                col1, col2 = st.columns(2)
-                with col1:
-                    if st.button("Nova consulta (mesmo aluno)"):
-                        st.session_state["estado"] = "pergunta"
-                        st.session_state["historico_conversa"] = []
-                        st.session_state["rodadas_followup"] = 0
-                        st.rerun()
-                with col2:
-                    if st.button("Nova consulta (novo aluno)"):
-                        st.session_state["estado"] = "anamnese"
-                        st.session_state["contexto_aluno"] = ""
-                        st.session_state["historico_conversa"] = []
-                        st.session_state["rodadas_followup"] = 0
-                        st.rerun()
+            st.session_state["ultimas_fontes"] = resposta.fontes
+            st.rerun()
 
         except Exception as e:
-            st.error(f"Erro ao processar a pergunta: {e}")
+            logger.error("Erro ao processar a pergunta: %s", e, exc_info=True)
+            st.error("Ocorreu um erro ao processar a pergunta. Tente novamente.")
+
+    else:
+        # Exibe fontes consultadas (após resposta do assistente)
+        if ultimas_fontes:
+            st.markdown("**Fontes consultadas:**")
+            for fonte in ultimas_fontes:
+                st.markdown(f"- {fonte}")
+
+        st.divider()
+
+        rodadas = st.session_state["rodadas_followup"]
+
+        # Detecta se a última mensagem do assistente contém uma pergunta de follow-up
+        ultima_resposta = next(
+            (m["content"] for m in reversed(historico) if m["role"] == "assistant"),
+            ""
+        )
+        fez_pergunta = "?" in ultima_resposta[-300:]
+
+        if fez_pergunta and rodadas < 3:
+            followup = st.text_area(
+                "Responda para que eu possa personalizar melhor o treino:",
+                key=f"followup_{rodadas}",
+                height=80,
+            )
+            if st.button("Responder", key=f"btn_followup_{rodadas}"):
+                if followup.strip():
+                    historico.append({"role": "user", "content": followup.strip()})
+                    st.session_state["historico_conversa"] = historico
+                    st.session_state["rodadas_followup"] = rodadas + 1
+                    st.rerun()
+        else:
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("Nova consulta (mesmo aluno)"):
+                    st.session_state["estado"] = "pergunta"
+                    st.session_state["historico_conversa"] = []
+                    st.session_state["rodadas_followup"] = 0
+                    st.rerun()
+            with col2:
+                if st.button("Nova consulta (novo aluno)"):
+                    st.session_state["estado"] = "anamnese"
+                    st.session_state["contexto_aluno"] = ""
+                    st.session_state["historico_conversa"] = []
+                    st.session_state["rodadas_followup"] = 0
+                    st.rerun()

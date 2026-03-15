@@ -82,3 +82,43 @@ def test_formatar_contexto_aluno():
     assert "jiu-jitsu" in contexto
     assert "desempenho esportivo" in contexto
     assert "peso livre" in contexto
+
+
+def test_formatar_contexto_aluno_sem_equipamentos():
+    """Verifica que equipamentos vazio exibe 'não informado'."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "nome": "Maria",
+        "idade": 25,
+        "modalidade": "corrida",
+        "objetivo": "resistência",
+        "dias_semana": 3,
+        "equipamentos": [],
+        "lesoes": "",
+        "nivel": "iniciante",
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "não informado" in contexto
+
+
+def test_formatar_contexto_aluno_sem_lesoes():
+    """Verifica que lesões vazia exibe 'nenhuma'."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "nome": "Carlos",
+        "idade": 40,
+        "modalidade": "musculação",
+        "objetivo": "hipertrofia",
+        "dias_semana": 5,
+        "equipamentos": ["máquinas"],
+        "lesoes": "",
+        "nivel": "avançado",
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "nenhuma" in contexto
