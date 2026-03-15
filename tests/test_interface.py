@@ -13,7 +13,7 @@ def test_fluxo_busca_e_geracao(settings_mock, resultados_exemplo):
          patch('src.retrieval.searcher.QdrantClient') as mock_qdrant, \
          patch('src.generation.llm.ChatNVIDIA') as mock_llm:
 
-        mock_qdrant.return_value.search.return_value = [
+        mock_qdrant.return_value.query_points.return_value.points = [
             MagicMock(payload={
                 'conteudo': r.chunk.conteudo,
                 'fonte': r.chunk.fonte,

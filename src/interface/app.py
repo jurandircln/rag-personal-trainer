@@ -12,7 +12,7 @@ from src.generation.llm import RAGGenerator
 
 
 # Inicializa componentes uma única vez por sessão (evita recarregar modelos)
-@st.cache_resource
+@st.cache_resource(show_spinner="🤖 Carregando Jarvis...")
 def carregar_componentes():
     """Carrega settings, searcher e generator uma vez por sessão."""
     settings = Settings()
@@ -28,13 +28,13 @@ st.set_page_config(page_title="Jarvis - Personal Trainer", layout="centered")
 st.title("JARVIS - Personal Trainer")
 
 # Instrução
-st.markdown("Digite as informações do aluno e sua dúvida sobre treinamento, anamnese ou prescrição de exercícios.")
+st.markdown("Digite as informações do aluno.")
 
 # Caixa de texto
 pergunta = st.text_area(
     label="Sua pergunta:",
     placeholder="Ex.: Aluno de 35 anos, histórico de lombalgia. Como montar um programa de força?",
-    height=150,
+    height=50,
 )
 
 # Botão de envio
@@ -44,7 +44,7 @@ if st.button("Enviar"):
     else:
         try:
             searcher, generator = carregar_componentes()
-            with st.spinner("Consultando base de conhecimento..."):
+            with st.spinner("🤖 Aguarde enquanto estou estudando o seu caso..."):
                 resultados = searcher.buscar(pergunta)
                 resposta = generator.gerar(pergunta, resultados)
 

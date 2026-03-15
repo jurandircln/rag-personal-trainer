@@ -46,8 +46,8 @@ def mock_qdrant_client(mocker):
     """Simula o QdrantClient para evitar dependência de um servidor Qdrant em execução."""
     mock = mocker.patch("src.retrieval.searcher.QdrantClient")
     instancia = mock.return_value
-    # Por padrão, search retorna lista vazia
-    instancia.search.return_value = []
+    # Por padrão, query_points retorna objeto com .points vazio
+    instancia.query_points.return_value.points = []
     return instancia
 
 
@@ -70,7 +70,7 @@ class TestBuscar:
         from src.retrieval.searcher import SemanticSearcher
 
         # Configura o mock do Qdrant para retornar um resultado
-        mock_qdrant_client.search.return_value = [mock_qdrant_search_result]
+        mock_qdrant_client.query_points.return_value.points = [mock_qdrant_search_result]
 
         buscador = SemanticSearcher(settings_mock)
         resultados = buscador.buscar("treino de força")
@@ -96,9 +96,10 @@ class TestBuscar:
         buscador.buscar("consulta de teste", top_k=3)
 
         # Garante que o cliente Qdrant foi chamado com limit=3
-        mock_qdrant_client.search.assert_called_once()
-        _, kwargs = mock_qdrant_client.search.call_args
+        mock_qdrant_client.query_points.assert_called_once()
+        _, kwargs = mock_qdrant_client.query_points.call_args
         assert kwargs.get("limit") == 3
+        assert kwargs.get("query") == [0.1] * 768
 
     def test_buscar_query_vazia_retorna_lista_vazia(
         self,
@@ -110,7 +111,7 @@ class TestBuscar:
         from src.retrieval.searcher import SemanticSearcher
 
         # Qdrant retorna lista vazia para query sem relevância
-        mock_qdrant_client.search.return_value = []
+        mock_qdrant_client.query_points.return_value.points = []
 
         buscador = SemanticSearcher(settings_mock)
         resultados = buscador.buscar("")
@@ -127,7 +128,7 @@ class TestBuscar:
         """Verifica que o Chunk dentro de ResultadoBusca contém todos os campos corretos."""
         from src.retrieval.searcher import SemanticSearcher
 
-        mock_qdrant_client.search.return_value = [mock_qdrant_search_result]
+        mock_qdrant_client.query_points.return_value.points = [mock_qdrant_search_result]
 
         buscador = SemanticSearcher(settings_mock)
         resultados = buscador.buscar("anamnese do cliente")
