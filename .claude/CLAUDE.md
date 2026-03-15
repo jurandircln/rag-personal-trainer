@@ -58,6 +58,24 @@ src/
 - **Branches**: `main`, `feat/*`, `fix/*`
 - **Commits**: Conventional Commits — `feat:`, `fix:`, `docs:`, `chore:`
 
+### Idioma dos Comentários
+
+**Todos os comentários de código devem ser escritos em português (pt-BR), sem exceção.**
+Esta regra se aplica a desenvolvedores humanos e a agentes de IA.
+
+- Docstrings de funções e classes: em português
+- Comentários inline (`#`): em português
+- Nomes de variáveis e type hints: mantêm snake_case em inglês (são código, não prosa)
+- Mensagens de log dirigidas ao usuário: em português
+
+Correto:
+```python
+def carregar_documento(caminho: str) -> list:
+    """Carrega um documento PDF e retorna uma lista de páginas."""
+    # Verifica se o arquivo existe antes de abrir
+```
+Incorreto: docstring ou comentário em inglês.
+
 ---
 
 ## Quality Rules
@@ -66,6 +84,7 @@ src/
 2. **Human review is required before merging** any branch into `main`.
 3. **Never commit `.env`** — use `.env.example` as the template. Secrets stay local.
 4. **No functional code without tests** — every non-trivial function must have corresponding test coverage.
+5. **Comentários obrigatoriamente em português (pt-BR)** — ver seção "Idioma dos Comentários".
 
 ---
 
@@ -78,6 +97,41 @@ The application expects the following environment variables (see `.env.example` 
 - `QDRANT_HOST` / `QDRANT_PORT` — connection details for the local Qdrant instance
 
 Run Qdrant locally via Docker before starting the application.
+
+---
+
+## Fluxo de Trabalho com Claude Code
+
+Use os slash commands abaixo como workflow padrão para toda tarefa de desenvolvimento.
+
+### Ciclo de Vida de uma Tarefa
+
+```
+/nova-tarefa <descrição>   →   implementação   →   /revisar-pr   →   /finalizar-tarefa
+```
+
+### Slash Commands Disponíveis
+
+| Comando | Quando usar |
+|---|---|
+| `/nova-tarefa <descrição>` | Ao iniciar qualquer tarefa nova — cria branch e orienta o contexto SDD |
+| `/revisar-pr [branch-base]` | Antes de todo PR — revisão estruturada com BLOQUEADORES / AVISOS / SUGESTÕES |
+| `/finalizar-tarefa` | Ao concluir a implementação — commit, push e abertura de PR |
+| `/debug <descrição>` | Ao encontrar qualquer bug não trivial — diagnóstico sistemático em 6 fases |
+
+### Superpowers × Comandos Nativos
+
+Devs **sem** Superpowers usam os slash commands como workflow padrão.
+Devs **com** Superpowers usam as skills nativas, que oferecem orquestração de subagentes.
+
+| Skill Superpowers | Equivalente nativo | Quando usar |
+|---|---|---|
+| `finishing-a-development-branch` | `/finalizar-tarefa` | Ao terminar desenvolvimento |
+| `requesting-code-review` | `/revisar-pr` | Antes de todo PR |
+| `systematic-debugging` | `/debug` | Bug não trivial |
+| `test-driven-development` | Testes antes + `/revisar-pr` para verificar | Toda função nova |
+| `subagent-driven-development` | Implementação direta + `/revisar-pr` | Features complexas |
+| `writing-plans` | Documentar plano antes de implementar | Features novas |
 
 ---
 
