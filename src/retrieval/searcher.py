@@ -63,12 +63,13 @@ class SemanticSearcher:
             top_k,
         )
 
-        # Consulta o Qdrant com o vetor codificado
-        resultados = self.cliente.search(
+        # Consulta o Qdrant com o vetor codificado (API atual: query_points retorna QueryResponse com .points)
+        resposta = self.cliente.query_points(
             collection_name=self.settings.qdrant_collection,
-            query_vector=vetor,
+            query=vetor,
             limit=top_k,
         )
+        resultados = resposta.points
 
         # Converte cada resultado do Qdrant para o tipo ResultadoBusca do sistema
         resultados_busca: list[ResultadoBusca] = []
