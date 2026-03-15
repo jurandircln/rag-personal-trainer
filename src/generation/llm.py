@@ -81,8 +81,13 @@ class RAGGenerator:
         )
         logger.debug("Enviando prompt ao LLM com %d referência(s).", len(resultados))
 
-        resposta = self.llm.invoke([HumanMessage(content=prompt)])
-        texto = resposta.content
+        # Invoca o modelo e captura erros de API
+        try:
+            resposta = self.llm.invoke([HumanMessage(content=prompt)])
+            texto = resposta.content
+        except Exception as e:
+            logger.error("Falha ao invocar o LLM: %s", e)
+            raise RuntimeError(f"Erro ao gerar resposta do LLM: {e}") from e
 
         fontes = list({r.chunk.fonte for r in resultados})
 

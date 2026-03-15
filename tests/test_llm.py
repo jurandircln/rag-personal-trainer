@@ -6,7 +6,6 @@ garantindo que os testes não necessitem de credenciais reais da API NVIDIA NIM.
 """
 
 import pytest
-from unittest.mock import patch
 
 from src.config.types import Chunk, RespostaRAG, ResultadoBusca
 from src.generation.prompt import montar_prompt
@@ -38,57 +37,62 @@ class TestRAGGenerator:
 
     def test_gerar_retorna_resposta_rag(
         self,
+        mocker,
         mock_chat_nvidia,
         settings_mock,
         resultados_exemplo,
     ) -> None:
-        """Verifica que gerar() retorna uma instância de RespostaRAG com texto não vazio."""
+        """Verifica que gerar() retorna uma instância de RespostaRAG com texto correto."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
         from src.generation.llm import RAGGenerator
 
-        with patch('src.generation.llm._carregar_metodologia', return_value=""):
-            gerador = RAGGenerator(settings=settings_mock)
-            resposta = gerador.gerar("query de teste", resultados_exemplo)
+        gerador = RAGGenerator(settings=settings_mock)
+        resposta = gerador.gerar("query de teste", resultados_exemplo)
 
         assert isinstance(resposta, RespostaRAG)
-        assert resposta.texto != ""
+        assert resposta.texto == "Resposta gerada pelo LLM sobre treinamento."
 
     def test_gerar_fontes_nao_vazias(
         self,
+        mocker,
         mock_chat_nvidia,
         settings_mock,
         resultados_exemplo,
     ) -> None:
         """Verifica que fontes não estão vazias quando resultados são fornecidos."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
         from src.generation.llm import RAGGenerator
 
-        with patch('src.generation.llm._carregar_metodologia', return_value=""):
-            gerador = RAGGenerator(settings=settings_mock)
-            resposta = gerador.gerar("query de teste", resultados_exemplo)
+        gerador = RAGGenerator(settings=settings_mock)
+        resposta = gerador.gerar("query de teste", resultados_exemplo)
 
         assert len(resposta.fontes) > 0
         assert "metodologia_treino.pdf" in resposta.fontes
 
     def test_gerar_com_lista_vazia_de_resultados(
         self,
+        mocker,
         mock_chat_nvidia,
         settings_mock,
     ) -> None:
         """Verifica que gerar() retorna RespostaRAG com fontes vazias quando não há resultados."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
         from src.generation.llm import RAGGenerator
 
-        with patch('src.generation.llm._carregar_metodologia', return_value=""):
-            gerador = RAGGenerator(settings=settings_mock)
-            resposta = gerador.gerar("query sem contexto", [])
+        gerador = RAGGenerator(settings=settings_mock)
+        resposta = gerador.gerar("query sem contexto", [])
 
         assert isinstance(resposta, RespostaRAG)
         assert resposta.fontes == []
 
     def test_gerar_fontes_sao_unicas(
         self,
+        mocker,
         mock_chat_nvidia,
         settings_mock,
     ) -> None:
         """Verifica que fontes duplicadas são eliminadas no retorno."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
         from src.generation.llm import RAGGenerator
 
         # Dois chunks com a mesma fonte
@@ -99,12 +103,48 @@ class TestRAGGenerator:
             ResultadoBusca(chunk=chunk2, score=0.8),
         ]
 
-        with patch('src.generation.llm._carregar_metodologia', return_value=""):
-            gerador = RAGGenerator(settings=settings_mock)
-            resposta = gerador.gerar("query", resultados)
+        gerador = RAGGenerator(settings=settings_mock)
+        resposta = gerador.gerar("query", resultados)
 
         # A mesma fonte deve aparecer apenas uma vez
         assert resposta.fontes.count("mesmo_arquivo.pdf") == 1
+
+
+# ---------------------------------------------------------------------------
+# Testes de _carregar_metodologia
+# ---------------------------------------------------------------------------
+
+
+class TestCarregarMetodologia:
+    """Testes para a função _carregar_metodologia."""
+
+    def test_retorna_string_vazia_se_arquivo_nao_existe(self, tmp_path, mocker) -> None:
+        """Verifica que retorna string vazia quando o arquivo de metodologia não existe."""
+        import src.generation.llm as llm_mod
+
+        mocker.patch.object(
+            llm_mod, "_CAMINHO_METODOLOGIA",
+            str(tmp_path / "metodologia_inexistente.txt"),
+        )
+
+        resultado = llm_mod._carregar_metodologia()
+
+        assert resultado == ""
+
+    def test_retorna_conteudo_quando_arquivo_existe(self, tmp_path, mocker) -> None:
+        """Verifica que retorna o conteúdo do arquivo quando ele existe."""
+        import src.generation.llm as llm_mod
+
+        arquivo = tmp_path / "metodologia.txt"
+        arquivo.write_text("Metodologia de teste: periodização linear.", encoding="utf-8")
+        mocker.patch.object(
+            llm_mod, "_CAMINHO_METODOLOGIA",
+            str(arquivo),
+        )
+
+        resultado = llm_mod._carregar_metodologia()
+
+        assert resultado == "Metodologia de teste: periodização linear."
 
 
 # ---------------------------------------------------------------------------
@@ -176,8 +216,6 @@ class TestMontarPromptComMetodologia:
 
     def test_prompt_contem_metodologia_quando_fornecida(self) -> None:
         """Verifica que metodologia aparece no prompt quando fornecida."""
-        from src.generation.prompt import montar_prompt
-
         prompt = montar_prompt(
             query="Criar treino",
             resultados=[],
@@ -189,8 +227,6 @@ class TestMontarPromptComMetodologia:
 
     def test_prompt_contem_contexto_do_aluno(self, resultados_exemplo) -> None:
         """Verifica que o contexto do aluno está presente no prompt."""
-        from src.generation.prompt import montar_prompt
-
         contexto = "Nome: João. Idade: 32. Modalidade: jiu-jitsu."
         prompt = montar_prompt(
             query="Criar treino",
@@ -204,8 +240,6 @@ class TestMontarPromptComMetodologia:
 
     def test_prompt_contem_template_de_saida(self, resultados_exemplo) -> None:
         """Verifica que o template de saída estruturada está no prompt."""
-        from src.generation.prompt import montar_prompt
-
         prompt = montar_prompt(
             query="Criar treino",
             resultados=resultados_exemplo,
@@ -219,8 +253,6 @@ class TestMontarPromptComMetodologia:
 
     def test_prompt_sem_metodologia_nao_tem_secao_metodologia(self) -> None:
         """Verifica que prompt sem metodologia não inclui marcador de metodologia."""
-        from src.generation.prompt import montar_prompt
-
         prompt = montar_prompt(
             query="Criar treino",
             resultados=[],
