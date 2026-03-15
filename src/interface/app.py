@@ -3,6 +3,8 @@ import sys
 import os
 import logging
 
+from qdrant_client.http.exceptions import UnexpectedResponse
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 import streamlit as st
@@ -220,6 +222,16 @@ elif st.session_state["estado"] == "resposta":
             st.session_state["ultimas_fontes"] = resposta.fontes
             st.rerun()
 
+        except UnexpectedResponse as e:
+            if e.status_code == 404 and "doesn't exist" in str(e.content):
+                st.error(
+                    "A base de conhecimento ainda não foi indexada no Qdrant Cloud. "
+                    "Execute: `python scripts/ingest.py --caminho data/raw/` "
+                    "com QDRANT_URL e QDRANT_API_KEY apontando para o Qdrant Cloud."
+                )
+                logger.error("Collection não encontrada no Qdrant: %s", e)
+            else:
+                raise
         except Exception as e:
             logger.error("Erro ao processar a pergunta: %s", e, exc_info=True)
             st.error("Ocorreu um erro ao processar a pergunta. Tente novamente.")
