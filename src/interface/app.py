@@ -28,11 +28,10 @@ st.set_page_config(page_title="Jarvis - Personal Trainer", layout="centered")
 st.title("JARVIS - Personal Trainer")
 
 # Instrução
-st.markdown("Digite as informações do aluno.")
+st.markdown("Olá! Vou te ajudar a montar um plano de treino. Digite as informações do aluno abaixo:")
 
 # Caixa de texto
 pergunta = st.text_area(
-    label="Sua pergunta:",
     placeholder="Ex.: Aluno de 35 anos, histórico de lombalgia. Como montar um programa de força?",
     height=50,
 )
