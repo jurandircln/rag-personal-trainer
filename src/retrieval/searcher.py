@@ -6,6 +6,7 @@ mais relevantes indexados na coleção do Qdrant.
 """
 
 import logging
+from typing import Optional
 
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
@@ -40,40 +41,64 @@ class SemanticSearcher:
             settings.qdrant_port,
         )
 
-    def buscar(self, query: str, top_k: int = 5) -> list[ResultadoBusca]:
-        """Busca os chunks mais relevantes para a query fornecida.
+    def buscar(
+        self,
+        query: str,
+        top_k: int = 5,
+        max_por_fonte: Optional[int] = 2,
+    ) -> list[ResultadoBusca]:
+        """Busca os chunks mais relevantes com diversidade de fontes.
 
-        Codifica a query em um vetor de embeddings e consulta o Qdrant
-        para recuperar os pontos mais similares, ordenados por score decrescente.
+        Busca um pool ampliado de candidatos e aplica filtro de diversidade,
+        limitando o número de chunks por fonte para garantir múltiplas referências.
 
         Args:
             query: texto da consulta do usuário.
             top_k: número máximo de resultados a retornar.
+            max_por_fonte: máximo de chunks permitidos por fonte. None desativa o filtro.
 
         Returns:
-            Lista de ResultadoBusca ordenada por score decrescente.
-            Retorna lista vazia se nenhum resultado for encontrado.
+            Lista de ResultadoBusca ordenada por score decrescente, com diversidade de fontes.
         """
-        # Codifica a query em vetor de embeddings
+        if not query.strip():
+            return []
+
+        # Busca pool ampliado para ter candidatos suficientes após filtro de diversidade
+        limite_ampliado = top_k * 4 if max_por_fonte else top_k
         vetor = self.modelo.encode(query).tolist()
 
         logger.debug(
-            "Executando busca semântica para query de %d caracteres com top_k=%d.",
-            len(query),
+            "Executando busca semântica (pool=%d, top_k=%d, max_por_fonte=%s).",
+            limite_ampliado,
             top_k,
+            max_por_fonte,
         )
 
         # Consulta o Qdrant com o vetor codificado (API atual: query_points retorna QueryResponse com .points)
         resposta = self.cliente.query_points(
             collection_name=self.settings.qdrant_collection,
             query=vetor,
-            limit=top_k,
+            limit=limite_ampliado,
         )
-        resultados = resposta.points
+        candidatos = resposta.points
 
-        # Converte cada resultado do Qdrant para o tipo ResultadoBusca do sistema
+        # Aplica filtro de diversidade por fonte
+        if max_por_fonte is not None:
+            contagem_por_fonte: dict[str, int] = {}
+            candidatos_filtrados = []
+            for resultado in candidatos:
+                fonte = resultado.payload["fonte"]
+                contagem = contagem_por_fonte.get(fonte, 0)
+                if contagem < max_por_fonte:
+                    candidatos_filtrados.append(resultado)
+                    contagem_por_fonte[fonte] = contagem + 1
+                if len(candidatos_filtrados) == top_k:
+                    break
+            candidatos = candidatos_filtrados
+
+        # Converte para ResultadoBusca
         resultados_busca: list[ResultadoBusca] = []
-        for resultado in resultados:
+        for resultado in candidatos[:top_k]:
             chunk = Chunk(
                 conteudo=resultado.payload["conteudo"],
                 fonte=resultado.payload["fonte"],
@@ -82,5 +107,7 @@ class SemanticSearcher:
             )
             resultados_busca.append(ResultadoBusca(chunk=chunk, score=resultado.score))
 
-        logger.debug("Busca retornou %d resultado(s).", len(resultados_busca))
+        logger.debug(
+            "Busca retornou %d resultado(s).", len(resultados_busca)
+        )
         return resultados_busca
