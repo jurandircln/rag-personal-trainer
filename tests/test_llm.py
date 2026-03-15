@@ -248,7 +248,7 @@ class TestMontarPromptComMetodologia:
         )
 
         assert "Resumo do Aluno" in prompt
-        assert "Como o Treinamento Foi Montado" in prompt
+        assert "Metodologia do Treino" in prompt
         assert "Plano de Treino" in prompt
 
     def test_prompt_sem_metodologia_nao_tem_secao_metodologia(self) -> None:

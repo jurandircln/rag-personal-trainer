@@ -86,7 +86,7 @@ if "ultimas_fontes" not in st.session_state:
 # ---------------------------------------------------------------------------
 
 if st.session_state["estado"] == "anamnese":
-    st.markdown("🤖 Olá! Preencha os dados do aluno para iniciarmos a consulta:")
+    st.markdown("Preencha os dados do aluno para iniciarmos a consulta:")
 
     with st.form("form_anamnese"):
         nome = st.text_input("Nome do aluno")
