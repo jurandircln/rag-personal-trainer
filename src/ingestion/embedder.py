@@ -91,11 +91,14 @@ class VectorIndexer:
             for indice, (chunk, embedding) in enumerate(zip(chunks, embeddings))
         ]
 
-        # Realiza o upsert em lote na coleção configurada
-        self.cliente.upsert(
-            collection_name=self.settings.qdrant_collection,
-            points=pontos,
-        )
+        # Realiza o upsert em lotes menores para não exceder o limite de payload do Qdrant
+        tamanho_lote = 100
+        for inicio in range(0, len(pontos), tamanho_lote):
+            lote = pontos[inicio : inicio + tamanho_lote]
+            self.cliente.upsert(
+                collection_name=self.settings.qdrant_collection,
+                points=lote,
+            )
         logger.info("%d chunks indexados na coleção '%s'.", len(chunks), self.settings.qdrant_collection)
 
         return len(chunks)
