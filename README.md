@@ -80,14 +80,10 @@ cd jarvis-personal-trainer
 cp .env.example .env
 # Edite .env e preencha NVIDIA_NIM_API_KEY, QDRANT_HOST, QDRANT_PORT
 
-# 3. Suba o Qdrant via Docker
-docker run -p 6333:6333 qdrant/qdrant
-
-# 4. Instale as dependências
-pip install -r requirements.txt
-
-# 5. Execute a aplicação
-streamlit run src/interface/app.py
+# 3. Suba o Qdrant e a aplicação via Docker Compose
+docker-compose up --build
+# Qdrant:    http://localhost:6333/dashboard
+# App:       http://localhost:8501
 ```
 
 ---
