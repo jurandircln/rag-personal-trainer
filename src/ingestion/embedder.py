@@ -17,6 +17,13 @@ from src.config.types import Chunk
 logger = logging.getLogger(__name__)
 
 
+def _criar_cliente_qdrant(settings: Settings) -> QdrantClient:
+    """Cria o cliente Qdrant no modo local (host:port) ou cloud (url + api_key)."""
+    if settings.usar_qdrant_cloud:
+        return QdrantClient(url=settings.qdrant_url, api_key=settings.qdrant_api_key)
+    return QdrantClient(host=settings.qdrant_host, port=settings.qdrant_port)
+
+
 class VectorIndexer:
     """Gera embeddings e indexa chunks de texto no Qdrant."""
 
@@ -29,14 +36,15 @@ class VectorIndexer:
         self.settings = settings
         # Carrega o modelo de embeddings multilingual
         self.modelo = SentenceTransformer(settings.embedding_model)
-        # Conecta ao Qdrant com as configurações fornecidas
-        self.cliente = QdrantClient(host=settings.qdrant_host, port=settings.qdrant_port)
+        # Conecta ao Qdrant no modo local ou cloud conforme a configuração
+        self.cliente = _criar_cliente_qdrant(settings)
         # Obtém a dimensão dos vetores gerados pelo modelo
         self._dim = self.modelo.get_sentence_embedding_dimension()
         logger.debug(
-            "VectorIndexer inicializado com modelo '%s' (dim=%d).",
+            "VectorIndexer inicializado com modelo '%s' (dim=%d, cloud=%s).",
             settings.embedding_model,
             self._dim,
+            settings.usar_qdrant_cloud,
         )
 
     def criar_colecao_se_necessario(self) -> None:

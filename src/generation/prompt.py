@@ -18,7 +18,7 @@ Estruture sua resposta EXATAMENTE neste formato:
 ## Resumo do Aluno
 [Síntese das informações fornecidas: nome, idade, modalidade, objetivo, nível, restrições]
 
-## Como o Treinamento Foi Montado
+## Metodologia do Treino
 [2-3 parágrafos explicando os princípios e decisões por trás do plano, com citações às referências científicas no formato (Fonte: [N], p. X)]
 
 ## Plano de Treino

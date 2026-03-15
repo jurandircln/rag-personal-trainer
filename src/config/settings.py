@@ -20,7 +20,9 @@ class Settings:
         """Carrega o arquivo .env e inicializa os atributos de configuração.
 
         Raises:
-            ValueError: se NVIDIA_API_KEY ou QDRANT_HOST não estiverem definidos.
+            ValueError: se NVIDIA_API_KEY não estiver definida; se QDRANT_URL estiver
+                definida mas QDRANT_API_KEY estiver ausente; ou se nenhuma das duas
+                (QDRANT_URL, QDRANT_HOST) estiver definida.
         """
         # Carrega variáveis do arquivo .env para o ambiente do processo
         load_dotenv()
@@ -35,7 +37,23 @@ class Settings:
         )
 
         # --- Configurações do Qdrant ---
-        self.qdrant_host: str = self._obter_obrigatorio("QDRANT_HOST")
+        # Modo cloud: QDRANT_URL + QDRANT_API_KEY
+        # Modo local: QDRANT_HOST + QDRANT_PORT
+        self.qdrant_url: str = os.environ.get("QDRANT_URL", "").strip()
+        self.qdrant_api_key: str = os.environ.get("QDRANT_API_KEY", "").strip()
+
+        if self.qdrant_url:
+            # Modo cloud — valida que a chave de API foi fornecida
+            if not self.qdrant_api_key:
+                raise ValueError(
+                    "Variável de ambiente obrigatória 'QDRANT_API_KEY' não encontrada "
+                    "quando 'QDRANT_URL' está definida (modo cloud)."
+                )
+            self.qdrant_host: str = ""
+        else:
+            # Modo local — QDRANT_HOST é obrigatório
+            self.qdrant_host = self._obter_obrigatorio("QDRANT_HOST")
+
         self.qdrant_port: int = int(os.environ.get("QDRANT_PORT", "6333"))
         self.qdrant_collection: str = os.environ.get(
             "QDRANT_COLLECTION", "jarvis_knowledge"
@@ -71,3 +89,8 @@ class Settings:
                 f"Verifique o arquivo .env ou as variáveis de ambiente do sistema."
             )
         return valor
+
+    @property
+    def usar_qdrant_cloud(self) -> bool:
+        """Retorna True se o modo cloud do Qdrant estiver configurado via QDRANT_URL."""
+        return bool(self.qdrant_url)

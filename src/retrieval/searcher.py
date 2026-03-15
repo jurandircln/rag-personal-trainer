@@ -17,6 +17,13 @@ from src.config.types import Chunk, ResultadoBusca
 logger = logging.getLogger(__name__)
 
 
+def _criar_cliente_qdrant(settings: Settings) -> QdrantClient:
+    """Cria o cliente Qdrant no modo local (host:port) ou cloud (url + api_key)."""
+    if settings.usar_qdrant_cloud:
+        return QdrantClient(url=settings.qdrant_url, api_key=settings.qdrant_api_key)
+    return QdrantClient(host=settings.qdrant_host, port=settings.qdrant_port)
+
+
 class SemanticSearcher:
     """Executa buscas semânticas na base de conhecimento indexada no Qdrant."""
 
@@ -29,16 +36,12 @@ class SemanticSearcher:
         self.settings = settings
         # Carrega o modelo de embeddings multilingual para codificar queries
         self.modelo = SentenceTransformer(settings.embedding_model)
-        # Conecta ao servidor Qdrant local
-        self.cliente = QdrantClient(
-            host=settings.qdrant_host,
-            port=settings.qdrant_port,
-        )
+        # Conecta ao Qdrant no modo local ou cloud conforme a configuração
+        self.cliente = _criar_cliente_qdrant(settings)
         logger.debug(
-            "SemanticSearcher inicializado com modelo '%s' e Qdrant em %s:%s.",
+            "SemanticSearcher inicializado com modelo '%s' (cloud=%s).",
             settings.embedding_model,
-            settings.qdrant_host,
-            settings.qdrant_port,
+            settings.usar_qdrant_cloud,
         )
 
     def buscar(
