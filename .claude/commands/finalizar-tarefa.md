@@ -87,7 +87,16 @@ O que fazer agora?
 
 ### 6. Se PR: exibir template de descrição
 
-Se o dev escolher `sim`, gere o comando `gh pr create` com o template:
+Se o dev escolher `sim`, carregue o `GH_TOKEN` do `.env` antes de executar o comando:
+
+```bash
+export GH_TOKEN=$(grep -oP '(?<=GH_TOKEN=)\S+' .env 2>/dev/null || echo "")
+```
+
+Se `GH_TOKEN` estiver vazio ou o `.env` não existir, **alerte o dev** com a mensagem:
+> "GH_TOKEN não encontrado no .env. Configure o token em https://github.com/settings/tokens e adicione GH_TOKEN=<seu_token> ao .env antes de continuar."
+
+Caso contrário, gere o comando `gh pr create` com o template:
 
 ```markdown
 ## O que foi feito
