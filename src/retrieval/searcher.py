@@ -87,7 +87,9 @@ class SemanticSearcher:
             contagem_por_fonte: dict[str, int] = {}
             candidatos_filtrados = []
             for resultado in candidatos:
-                fonte = resultado.payload["fonte"]
+                fonte = resultado.payload.get("fonte", "")
+                if not fonte:
+                    continue
                 contagem = contagem_por_fonte.get(fonte, 0)
                 if contagem < max_por_fonte:
                     candidatos_filtrados.append(resultado)
@@ -96,14 +98,22 @@ class SemanticSearcher:
                     break
             candidatos = candidatos_filtrados
 
-        # Converte para ResultadoBusca
+        # Converte para ResultadoBusca, ignorando registros com payload incompleto
         resultados_busca: list[ResultadoBusca] = []
         for resultado in candidatos[:top_k]:
+            payload = resultado.payload
+            chaves_obrigatorias = {"conteudo", "fonte", "pagina", "chunk_id"}
+            if not chaves_obrigatorias.issubset(payload.keys()):
+                logger.warning(
+                    "Registro ignorado: payload incompleto — chaves presentes: %s",
+                    list(payload.keys()),
+                )
+                continue
             chunk = Chunk(
-                conteudo=resultado.payload["conteudo"],
-                fonte=resultado.payload["fonte"],
-                pagina=resultado.payload["pagina"],
-                chunk_id=resultado.payload["chunk_id"],
+                conteudo=payload["conteudo"],
+                fonte=payload["fonte"],
+                pagina=payload["pagina"],
+                chunk_id=payload["chunk_id"],
             )
             resultados_busca.append(ResultadoBusca(chunk=chunk, score=resultado.score))
 

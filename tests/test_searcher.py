@@ -8,6 +8,7 @@ que os testes não dependam de modelos reais ou de um servidor Qdrant em execuç
 import pytest
 
 from src.config.types import ResultadoBusca, Chunk
+from src.retrieval.searcher import SemanticSearcher
 
 
 # ---------------------------------------------------------------------------
@@ -67,8 +68,6 @@ class TestBuscar:
         mock_qdrant_search_result,
     ) -> None:
         """Verifica que buscar retorna uma lista de ResultadoBusca com score correto."""
-        from src.retrieval.searcher import SemanticSearcher
-
         # Configura o mock do Qdrant para retornar um resultado
         mock_qdrant_client.query_points.return_value.points = [mock_qdrant_search_result]
 
@@ -90,8 +89,6 @@ class TestBuscar:
         mock_qdrant_client,
     ) -> None:
         """Verifica que top_k controla o número de resultados quando max_por_fonte=None."""
-        from src.retrieval.searcher import SemanticSearcher
-
         buscador = SemanticSearcher(settings_mock)
         buscador.buscar("consulta de teste", top_k=3, max_por_fonte=None)
 
@@ -107,16 +104,12 @@ class TestBuscar:
         mock_sentence_transformer,
         mock_qdrant_client,
     ) -> None:
-        """Verifica que buscar com query vazia retorna lista vazia quando Qdrant retorna []."""
-        from src.retrieval.searcher import SemanticSearcher
-
-        # Qdrant retorna lista vazia para query sem relevância
-        mock_qdrant_client.query_points.return_value.points = []
-
+        """Verifica que buscar com query vazia retorna lista vazia sem chamar o Qdrant."""
         buscador = SemanticSearcher(settings_mock)
         resultados = buscador.buscar("")
 
         assert resultados == []
+        mock_qdrant_client.query_points.assert_not_called()
 
     def test_buscar_chunk_tem_campos_corretos(
         self,
@@ -126,8 +119,6 @@ class TestBuscar:
         mock_qdrant_search_result,
     ) -> None:
         """Verifica que o Chunk dentro de ResultadoBusca contém todos os campos corretos."""
-        from src.retrieval.searcher import SemanticSearcher
-
         mock_qdrant_client.query_points.return_value.points = [mock_qdrant_search_result]
 
         buscador = SemanticSearcher(settings_mock)
@@ -165,8 +156,6 @@ class TestBuscarComDiversidade:
         self, settings_mock, mock_sentence_transformer, mock_qdrant_client, mocker
     ) -> None:
         """Verifica que no máximo max_por_fonte chunks da mesma fonte são retornados."""
-        from src.retrieval.searcher import SemanticSearcher
-
         resultados_qdrant = [
             self._criar_resultado(mocker, "livro_a.pdf", 0.99),
             self._criar_resultado(mocker, "livro_a.pdf", 0.97),
@@ -187,8 +176,6 @@ class TestBuscarComDiversidade:
         self, settings_mock, mock_sentence_transformer, mock_qdrant_client, mocker
     ) -> None:
         """Verifica que o resultado final contém chunks de múltiplas fontes."""
-        from src.retrieval.searcher import SemanticSearcher
-
         resultados_qdrant = [
             self._criar_resultado(mocker, "nasm.pdf", 0.98),
             self._criar_resultado(mocker, "nasm.pdf", 0.96),
@@ -208,8 +195,6 @@ class TestBuscarComDiversidade:
         self, settings_mock, mock_sentence_transformer, mock_qdrant_client, mocker
     ) -> None:
         """Verifica que max_por_fonte=None mantém o comportamento original."""
-        from src.retrieval.searcher import SemanticSearcher
-
         resultados_qdrant = [
             self._criar_resultado(mocker, "livro_a.pdf", 0.99),
             self._criar_resultado(mocker, "livro_a.pdf", 0.97),
