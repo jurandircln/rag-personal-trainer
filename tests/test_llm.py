@@ -37,26 +37,30 @@ class TestRAGGenerator:
 
     def test_gerar_retorna_resposta_rag(
         self,
+        mocker,
         mock_chat_nvidia,
         settings_mock,
         resultados_exemplo,
     ) -> None:
-        """Verifica que gerar() retorna uma instância de RespostaRAG com texto não vazio."""
+        """Verifica que gerar() retorna uma instância de RespostaRAG com texto correto."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
         from src.generation.llm import RAGGenerator
 
         gerador = RAGGenerator(settings=settings_mock)
         resposta = gerador.gerar("query de teste", resultados_exemplo)
 
         assert isinstance(resposta, RespostaRAG)
-        assert resposta.texto != ""
+        assert resposta.texto == "Resposta gerada pelo LLM sobre treinamento."
 
     def test_gerar_fontes_nao_vazias(
         self,
+        mocker,
         mock_chat_nvidia,
         settings_mock,
         resultados_exemplo,
     ) -> None:
         """Verifica que fontes não estão vazias quando resultados são fornecidos."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
         from src.generation.llm import RAGGenerator
 
         gerador = RAGGenerator(settings=settings_mock)
@@ -67,10 +71,12 @@ class TestRAGGenerator:
 
     def test_gerar_com_lista_vazia_de_resultados(
         self,
+        mocker,
         mock_chat_nvidia,
         settings_mock,
     ) -> None:
         """Verifica que gerar() retorna RespostaRAG com fontes vazias quando não há resultados."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
         from src.generation.llm import RAGGenerator
 
         gerador = RAGGenerator(settings=settings_mock)
@@ -81,10 +87,12 @@ class TestRAGGenerator:
 
     def test_gerar_fontes_sao_unicas(
         self,
+        mocker,
         mock_chat_nvidia,
         settings_mock,
     ) -> None:
         """Verifica que fontes duplicadas são eliminadas no retorno."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
         from src.generation.llm import RAGGenerator
 
         # Dois chunks com a mesma fonte
@@ -103,6 +111,43 @@ class TestRAGGenerator:
 
 
 # ---------------------------------------------------------------------------
+# Testes de _carregar_metodologia
+# ---------------------------------------------------------------------------
+
+
+class TestCarregarMetodologia:
+    """Testes para a função _carregar_metodologia."""
+
+    def test_retorna_string_vazia_se_arquivo_nao_existe(self, tmp_path, mocker) -> None:
+        """Verifica que retorna string vazia quando o arquivo de metodologia não existe."""
+        import src.generation.llm as llm_mod
+
+        mocker.patch.object(
+            llm_mod, "_CAMINHO_METODOLOGIA",
+            str(tmp_path / "metodologia_inexistente.txt"),
+        )
+
+        resultado = llm_mod._carregar_metodologia()
+
+        assert resultado == ""
+
+    def test_retorna_conteudo_quando_arquivo_existe(self, tmp_path, mocker) -> None:
+        """Verifica que retorna o conteúdo do arquivo quando ele existe."""
+        import src.generation.llm as llm_mod
+
+        arquivo = tmp_path / "metodologia.txt"
+        arquivo.write_text("Metodologia de teste: periodização linear.", encoding="utf-8")
+        mocker.patch.object(
+            llm_mod, "_CAMINHO_METODOLOGIA",
+            str(arquivo),
+        )
+
+        resultado = llm_mod._carregar_metodologia()
+
+        assert resultado == "Metodologia de teste: periodização linear."
+
+
+# ---------------------------------------------------------------------------
 # Testes de montar_prompt
 # ---------------------------------------------------------------------------
 
@@ -112,27 +157,27 @@ class TestMontarPrompt:
 
     def test_prompt_contem_query(self, resultados_exemplo: list[ResultadoBusca]) -> None:
         """Verifica que o prompt contém a query fornecida pelo usuário."""
-        prompt = montar_prompt("minha query", resultados_exemplo)
+        prompt = montar_prompt("minha query", resultados_exemplo, metodologia="", contexto_aluno="")
 
         assert "minha query" in prompt
 
     def test_prompt_contem_fontes(self, resultados_exemplo: list[ResultadoBusca]) -> None:
         """Verifica que o prompt contém o nome da fonte de cada resultado."""
-        prompt = montar_prompt("query de teste", resultados_exemplo)
+        prompt = montar_prompt("query de teste", resultados_exemplo, metodologia="", contexto_aluno="")
 
         for resultado in resultados_exemplo:
             assert resultado.chunk.fonte in prompt
 
     def test_prompt_formato_referencias(self, resultados_exemplo: list[ResultadoBusca]) -> None:
         """Verifica que o prompt possui a seção REFERÊNCIAS e o formato [1] correto."""
-        prompt = montar_prompt("query de teste", resultados_exemplo)
+        prompt = montar_prompt("query de teste", resultados_exemplo, metodologia="", contexto_aluno="")
 
         assert "REFERÊNCIAS:" in prompt
         assert "[1]" in prompt
 
     def test_prompt_sem_resultados_indica_ausencia(self) -> None:
         """Verifica que prompt sem resultados contém mensagem de ausência de referências."""
-        prompt = montar_prompt("query sem contexto", [])
+        prompt = montar_prompt("query sem contexto", [], metodologia="", contexto_aluno="")
 
         assert "REFERÊNCIAS: (nenhuma referência disponível)" in prompt
         assert "query sem contexto" in prompt
@@ -146,7 +191,7 @@ class TestMontarPrompt:
             ResultadoBusca(chunk=chunk2, score=0.8),
         ]
 
-        prompt = montar_prompt("pergunta", resultados)
+        prompt = montar_prompt("pergunta", resultados, metodologia="", contexto_aluno="")
 
         assert "[1]" in prompt
         assert "[2]" in prompt
@@ -155,7 +200,64 @@ class TestMontarPrompt:
 
     def test_prompt_contem_numero_de_pagina(self, resultados_exemplo: list[ResultadoBusca]) -> None:
         """Verifica que o número de página do chunk está presente no prompt."""
-        prompt = montar_prompt("query", resultados_exemplo)
+        prompt = montar_prompt("query", resultados_exemplo, metodologia="", contexto_aluno="")
 
         # A página do primeiro chunk de exemplo é 1
         assert "p. 1" in prompt
+
+
+# ---------------------------------------------------------------------------
+# Testes de montar_prompt com metodologia e contexto do aluno
+# ---------------------------------------------------------------------------
+
+
+class TestMontarPromptComMetodologia:
+    """Testes para prompt com metodologia e contexto do aluno."""
+
+    def test_prompt_contem_metodologia_quando_fornecida(self) -> None:
+        """Verifica que metodologia aparece no prompt quando fornecida."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=[],
+            metodologia="Seguir método RB: periodização ondulatória.",
+            contexto_aluno="",
+        )
+
+        assert "Seguir método RB: periodização ondulatória." in prompt
+
+    def test_prompt_contem_contexto_do_aluno(self, resultados_exemplo) -> None:
+        """Verifica que o contexto do aluno está presente no prompt."""
+        contexto = "Nome: João. Idade: 32. Modalidade: jiu-jitsu."
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno=contexto,
+        )
+
+        assert "João" in prompt
+        assert "jiu-jitsu" in prompt
+
+    def test_prompt_contem_template_de_saida(self, resultados_exemplo) -> None:
+        """Verifica que o template de saída estruturada está no prompt."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno="",
+        )
+
+        assert "Resumo do Aluno" in prompt
+        assert "Como o Treinamento Foi Montado" in prompt
+        assert "Plano de Treino" in prompt
+
+    def test_prompt_sem_metodologia_nao_tem_secao_metodologia(self) -> None:
+        """Verifica que prompt sem metodologia não inclui marcador de metodologia."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=[],
+            metodologia="",
+            contexto_aluno="",
+        )
+
+        assert "[METODOLOGIA" not in prompt

@@ -49,3 +49,6 @@ logs/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Arquivos gerados (não versionar)
+src/generation/metodologia.txt
