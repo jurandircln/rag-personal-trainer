@@ -152,3 +152,65 @@ class TestTipos:
         assert resposta.texto == "Resposta gerada pelo LLM."
         assert len(resposta.fontes) == 2
         assert "documento1.pdf" in resposta.fontes
+
+
+# ---------------------------------------------------------------------------
+# Testes de Settings — modo cloud do Qdrant
+# ---------------------------------------------------------------------------
+
+class TestSettingsModoCloud:
+    """Testes para o modo cloud do Qdrant via QDRANT_URL."""
+
+    def test_modo_cloud_aceita_url_sem_qdrant_host(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Verifica que Settings aceita QDRANT_URL + QDRANT_API_KEY sem exigir QDRANT_HOST."""
+        _desabilitar_dotenv(monkeypatch)
+        monkeypatch.setenv("NVIDIA_API_KEY", "chave-nvidia-teste")
+        monkeypatch.setenv("QDRANT_URL", "https://xyz.cloud.qdrant.io")
+        monkeypatch.setenv("QDRANT_API_KEY", "chave-qdrant-cloud")
+        monkeypatch.delenv("QDRANT_HOST", raising=False)
+
+        settings = Settings()
+
+        assert settings.qdrant_url == "https://xyz.cloud.qdrant.io"
+        assert settings.qdrant_api_key == "chave-qdrant-cloud"
+        assert settings.usar_qdrant_cloud is True
+
+    def test_modo_cloud_lanca_erro_sem_qdrant_api_key(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Verifica que ValueError é lançado quando QDRANT_URL está definida mas QDRANT_API_KEY não."""
+        _desabilitar_dotenv(monkeypatch)
+        monkeypatch.setenv("NVIDIA_API_KEY", "chave-nvidia-teste")
+        monkeypatch.setenv("QDRANT_URL", "https://xyz.cloud.qdrant.io")
+        monkeypatch.delenv("QDRANT_API_KEY", raising=False)
+        monkeypatch.delenv("QDRANT_HOST", raising=False)
+
+        with pytest.raises(ValueError, match="QDRANT_API_KEY"):
+            Settings()
+
+    def test_modo_local_continua_exigindo_qdrant_host(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Verifica que QDRANT_HOST ainda é obrigatório quando QDRANT_URL está ausente."""
+        _desabilitar_dotenv(monkeypatch)
+        monkeypatch.setenv("NVIDIA_API_KEY", "chave-nvidia-teste")
+        monkeypatch.delenv("QDRANT_URL", raising=False)
+        monkeypatch.delenv("QDRANT_HOST", raising=False)
+
+        with pytest.raises(ValueError, match="QDRANT_HOST"):
+            Settings()
+
+    def test_modo_local_usar_qdrant_cloud_e_falso(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Verifica que usar_qdrant_cloud é False no modo local."""
+        _desabilitar_dotenv(monkeypatch)
+        monkeypatch.setenv("NVIDIA_API_KEY", "chave-nvidia-teste")
+        monkeypatch.setenv("QDRANT_HOST", "localhost")
+        monkeypatch.delenv("QDRANT_URL", raising=False)
+
+        settings = Settings()
+
+        assert settings.usar_qdrant_cloud is False
