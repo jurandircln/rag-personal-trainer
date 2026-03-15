@@ -28,16 +28,16 @@ def formatar_contexto_aluno(dados: dict) -> str:
     Returns:
         String formatada com as informações do aluno.
     """
-    equipamentos = ", ".join(dados.get("equipamentos", [])) or "não informado"
+    equipamentos = ", ".join(dados.get("Equipamentos disponíveis", [])) or "não informado"
     return (
-        f"Nome: {dados['nome']}\n"
-        f"Idade: {dados['idade']} anos\n"
-        f"Modalidade/esporte: {dados['modalidade']}\n"
-        f"Objetivo principal: {dados['objetivo']}\n"
-        f"Dias disponíveis por semana: {dados['dias_semana']}\n"
+        f"Nome: {dados['Nome']}\n"
+        f"Idade: {dados['Idade']} anos\n"
+        f"Modalidade/esporte: {dados['Modalidade / Esporte praticado']}\n"
+        f"Objetivo principal: {dados['Objetivo']}\n"
+        f"Dias disponíveis por semana: {dados['Dias disponíveis por semana']}\n"
         f"Equipamentos disponíveis: {equipamentos}\n"
-        f"Lesões ou restrições: {dados['lesoes'] or 'nenhuma'}\n"
-        f"Nível de condicionamento: {dados['nivel']}\n"
+        f"Lesões ou restrições: {dados['Lesões ou restrições'] or 'nenhuma'}\n"
+        f"Nível de condicionamento: {dados['Nível de condicionamento']}\n"
     )
 
 
@@ -86,7 +86,7 @@ if "ultimas_fontes" not in st.session_state:
 # ---------------------------------------------------------------------------
 
 if st.session_state["estado"] == "anamnese":
-    st.markdown("Preencha os dados do aluno para começar.")
+    st.markdown("🤖 Olá! Preencha os dados do aluno para iniciarmos a consulta:")
 
     with st.form("form_anamnese"):
         nome = st.text_input("Nome do aluno")
@@ -98,25 +98,25 @@ if st.session_state["estado"] == "anamnese":
             )
             nivel = st.selectbox(
                 "Nível de condicionamento",
-                ["iniciante", "intermediário", "avançado"],
+                ["Iniciante", "Intermediário", "Avançado"],
             )
         with col2:
-            modalidade = st.text_input("Modalidade / esporte praticado")
+            modalidade = st.text_input("Modalidade / Esporte praticado")
             objetivo = st.selectbox(
                 "Objetivo principal",
                 [
-                    "hipertrofia",
-                    "resistência",
-                    "emagrecimento",
-                    "desempenho esportivo",
-                    "reabilitação",
+                    "Hipertrofia",
+                    "Resistência",
+                    "Emagrecimento",
+                    "Desempenho Esportivo",
+                    "Reabilitação",
                 ],
             )
 
         equipamentos = st.multiselect(
             "Equipamentos disponíveis",
-            ["peso livre", "máquinas", "peso corporal", "elásticos", "sem equipamento"],
-            default=["peso corporal"],
+            ["Peso Livre", "Máquinas", "Peso Corporal", "Elásticos", "Sem Equipamento"],
+            default=["Peso Corporal"],
         )
         lesoes = st.text_area(
             "Lesões ou restrições (deixe em branco se nenhuma)", height=80
@@ -129,14 +129,14 @@ if st.session_state["estado"] == "anamnese":
             st.warning("Por favor, preencha pelo menos o nome e a modalidade do aluno.")
         else:
             dados = {
-                "nome": nome.strip(),
-                "idade": idade,
-                "modalidade": modalidade.strip(),
-                "objetivo": objetivo,
-                "dias_semana": dias_semana,
-                "equipamentos": equipamentos,
-                "lesoes": lesoes.strip(),
-                "nivel": nivel,
+                "Nome": nome.strip(),
+                "Idade": idade,
+                "Modalidade / Esporte praticado": modalidade.strip(),
+                "Objetivo": objetivo,
+                "Dias disponíveis por semana": dias_semana,
+                "Equipamentos disponíveis": equipamentos,
+                "Lesões ou restrições": lesoes.strip(),
+                "Nível de condicionamento": nivel,
             }
             st.session_state["contexto_aluno"] = formatar_contexto_aluno(dados)
             st.session_state["estado"] = "pergunta"
