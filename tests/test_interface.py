@@ -65,14 +65,14 @@ def test_formatar_contexto_aluno():
     from src.interface.app import formatar_contexto_aluno
 
     dados = {
-        "nome": "João",
-        "idade": 32,
-        "modalidade": "jiu-jitsu",
-        "objetivo": "desempenho esportivo",
-        "dias_semana": 4,
-        "equipamentos": ["peso livre", "peso corporal"],
-        "lesoes": "nenhuma",
-        "nivel": "intermediário",
+        "Nome": "João",
+        "Idade": 32,
+        "Modalidade / Esporte praticado": "jiu-jitsu",
+        "Objetivo": "Desempenho Esportivo",
+        "Dias disponíveis por semana": 4,
+        "Equipamentos disponíveis": ["Peso Livre", "Peso Corporal"],
+        "Lesões ou restrições": "nenhuma",
+        "Nível de condicionamento": "Intermediário",
     }
 
     contexto = formatar_contexto_aluno(dados)
@@ -80,8 +80,8 @@ def test_formatar_contexto_aluno():
     assert "João" in contexto
     assert "32" in contexto
     assert "jiu-jitsu" in contexto
-    assert "desempenho esportivo" in contexto
-    assert "peso livre" in contexto
+    assert "Desempenho Esportivo" in contexto
+    assert "Peso Livre" in contexto
 
 
 def test_formatar_contexto_aluno_sem_equipamentos():
@@ -89,14 +89,14 @@ def test_formatar_contexto_aluno_sem_equipamentos():
     from src.interface.app import formatar_contexto_aluno
 
     dados = {
-        "nome": "Maria",
-        "idade": 25,
-        "modalidade": "corrida",
-        "objetivo": "resistência",
-        "dias_semana": 3,
-        "equipamentos": [],
-        "lesoes": "",
-        "nivel": "iniciante",
+        "Nome": "Maria",
+        "Idade": 25,
+        "Modalidade / Esporte praticado": "corrida",
+        "Objetivo": "Resistência",
+        "Dias disponíveis por semana": 3,
+        "Equipamentos disponíveis": [],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Iniciante",
     }
 
     contexto = formatar_contexto_aluno(dados)
@@ -109,14 +109,14 @@ def test_formatar_contexto_aluno_sem_lesoes():
     from src.interface.app import formatar_contexto_aluno
 
     dados = {
-        "nome": "Carlos",
-        "idade": 40,
-        "modalidade": "musculação",
-        "objetivo": "hipertrofia",
-        "dias_semana": 5,
-        "equipamentos": ["máquinas"],
-        "lesoes": "",
-        "nivel": "avançado",
+        "Nome": "Carlos",
+        "Idade": 40,
+        "Modalidade / Esporte praticado": "musculação",
+        "Objetivo": "Hipertrofia",
+        "Dias disponíveis por semana": 5,
+        "Equipamentos disponíveis": ["Máquinas"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Avançado",
     }
 
     contexto = formatar_contexto_aluno(dados)
