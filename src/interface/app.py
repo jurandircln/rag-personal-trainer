@@ -37,6 +37,7 @@ def formatar_contexto_aluno(dados: dict) -> str:
         f"Modalidade/esporte: {dados['Modalidade / Esporte praticado']}\n"
         f"Objetivo principal: {dados['Objetivo']}\n"
         f"Dias disponíveis por semana: {dados['Dias disponíveis por semana']}\n"
+        f"Tempo por sessão: {dados['Tempo por sessão']}\n"
         f"Equipamentos disponíveis: {equipamentos}\n"
         f"Lesões ou restrições: {dados['Lesões ou restrições'] or 'nenhuma'}\n"
         f"Nível de condicionamento: {dados['Nível de condicionamento']}\n"
@@ -101,6 +102,10 @@ if st.session_state["estado"] == "anamnese":
             dias_semana = st.number_input(
                 "Dias disponíveis por semana", min_value=1, max_value=7, value=3
             )
+            tempo_sessao = st.selectbox(
+                "Tempo disponível por sessão",
+                ["30 min", "45 min", "60 min", "90 min+"],
+            )
             nivel = st.selectbox(
                 "Nível de condicionamento",
                 ["Iniciante", "Intermediário", "Avançado"],
@@ -139,6 +144,7 @@ if st.session_state["estado"] == "anamnese":
                 "Modalidade / Esporte praticado": modalidade.strip(),
                 "Objetivo": objetivo,
                 "Dias disponíveis por semana": dias_semana,
+                "Tempo por sessão": tempo_sessao,
                 "Equipamentos disponíveis": equipamentos,
                 "Lesões ou restrições": lesoes.strip(),
                 "Nível de condicionamento": nivel,
