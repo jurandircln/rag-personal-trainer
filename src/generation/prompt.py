@@ -94,9 +94,15 @@ def montar_prompt(
             "[CATÁLOGO DE EXERCÍCIOS — usar para selecionar movimentos do plano]\n"
             "Regras obrigatórias:\n"
             "- Use SOMENTE exercícios presentes nesta tabela filtrada.\n"
+            "- Use o nome EXATO do exercício conforme escrito na coluna 'Exercício'. "
+            "Não renomeie, abrevie nem adapte os nomes.\n"
             "- Exercícios marcados [PRIORIZAR] devem ser a primeira escolha para o nível do aluno.\n"
             "- Exercícios marcados [SUBSTITUTO OBRIGATÓRIO] substituem obrigatoriamente o exercício "
             "original. Nunca sugira o exercício original quando houver substituto marcado.\n"
+            "- Use a coluna 'Tempo por rep. (s)' para dimensionar o volume: estime o tempo total "
+            "de cada exercício como (séries × repetições × tempo_por_rep_s + séries × 90s de descanso). "
+            "Distribua exercícios suficientes para preencher o tempo de sessão do aluno. "
+            "Exemplo: 60 min de sessão comporta tipicamente 6 a 8 exercícios com 3 a 4 séries cada.\n"
             f"{catalogo_filtrado}\n"
         )
         secoes.append(instrucoes_catalogo)

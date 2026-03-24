@@ -102,14 +102,6 @@ if st.session_state["estado"] == "anamnese":
             dias_semana = st.number_input(
                 "Dias disponíveis por semana", min_value=1, max_value=7, value=3
             )
-            tempo_sessao = st.selectbox(
-                "Tempo disponível por sessão",
-                ["30 min", "45 min", "60 min", "90 min+"],
-            )
-            nivel = st.selectbox(
-                "Nível de condicionamento",
-                ["Iniciante", "Intermediário", "Avançado"],
-            )
         with col2:
             modalidade = st.text_input("Modalidade / Esporte praticado")
             objetivo = st.selectbox(
@@ -121,6 +113,18 @@ if st.session_state["estado"] == "anamnese":
                     "Desempenho Esportivo",
                     "Reabilitação",
                 ],
+            )
+
+        col3, col4 = st.columns(2)
+        with col3:
+            tempo_sessao = st.selectbox(
+                "Tempo disponível por sessão",
+                ["30 min", "45 min", "60 min", "90 min+"],
+            )
+        with col4:
+            nivel = st.selectbox(
+                "Nível de condicionamento",
+                ["Iniciante", "Intermediário", "Avançado"],
             )
 
         equipamentos = st.multiselect(

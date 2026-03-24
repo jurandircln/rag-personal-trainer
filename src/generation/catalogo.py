@@ -121,8 +121,8 @@ class CatalogoExercicios:
             if exercicios_grupo:
                 cabecalho = (
                     "| Exercício | Músculo Alvo | Substitutos | "
-                    "Contraindicações / Alertas | Tag de Equipamento |\n"
-                    "|---|---|---|---|---|"
+                    "Contraindicações / Alertas | Tag de Equipamento | Tempo por rep. (s) |\n"
+                    "|---|---|---|---|---|---|"
                 )
                 linhas_md = "\n".join(exercicios_grupo)
                 secoes_resultado.append(f"## {nome_grupo}\n\n{cabecalho}\n{linhas_md}")
@@ -181,7 +181,8 @@ class CatalogoExercicios:
             if len(celulas) < 5:
                 continue
 
-            nome, musculo, substitutos_raw, contraindicacoes, tag = celulas
+            nome, musculo, substitutos_raw, contraindicacoes, tag = celulas[:5]
+            tempo_rep = celulas[5] if len(celulas) > 5 else "—"
             tag_lower = tag.strip().lower()
 
             # Regra 2: filtro de equipamento
@@ -206,7 +207,7 @@ class CatalogoExercicios:
             else:
                 flag = " [PRIORIZAR]" if priorizar else ""
                 resultado.append(
-                    f"| {nome}{flag} | {musculo} | {substitutos_raw} | {contraindicacoes} | {tag} |"
+                    f"| {nome}{flag} | {musculo} | {substitutos_raw} | {contraindicacoes} | {tag} | {tempo_rep} |"
                 )
 
         return resultado
@@ -234,7 +235,7 @@ class CatalogoExercicios:
                 continue
             # v1: substitutos não passam por filtro de contraindicação
             resultado.append(
-                f"| {nome_sub} [SUBSTITUTO OBRIGATÓRIO] | {musculo} | — | — | {tag_sub} |"
+                f"| {nome_sub} [SUBSTITUTO OBRIGATÓRIO] | {musculo} | — | — | {tag_sub} | — |"
             )
 
         return resultado

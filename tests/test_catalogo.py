@@ -11,18 +11,18 @@ from src.generation.catalogo import CatalogoExercicios
 CATALOGO_MINIMO = """\
 ## Membros Inferiores
 
-| Exercício | Músculo Alvo | Substitutos | Contraindicações / Alertas | Tag de Equipamento |
-|---|---|---|---|---|
-| Agachamento Livre | Quadríceps, Glúteo | Leg Press, Goblet Squat | Hérnia de disco, dor aguda no joelho. | Peso Livre |
-| Leg Press 45º | Quadríceps, Glúteo | Agachamento Hack, Passada | Dor lombar crônica. | Máquina |
-| Cadeira Extensora | Quadríceps | Extensão com Caneleira | Condromalácia patelar aguda. | Máquina |
+| Exercício | Músculo Alvo | Substitutos | Contraindicações / Alertas | Tag de Equipamento | Tempo por rep. (s) |
+|---|---|---|---|---|---|
+| Agachamento Livre | Quadríceps, Glúteo | Leg Press, Goblet Squat | Hérnia de disco, dor aguda no joelho. | Peso Livre | 4 |
+| Leg Press 45º | Quadríceps, Glúteo | Agachamento Hack, Passada | Dor lombar crônica. | Máquina | 3 |
+| Cadeira Extensora | Quadríceps | Extensão com Caneleira | Condromalácia patelar aguda. | Máquina | 2 |
 
 ## Tronco e Core
 
-| Exercício | Músculo Alvo | Substitutos | Contraindicações / Alertas | Tag de Equipamento |
-|---|---|---|---|---|
-| Prancha Abdominal | Transverso do abdome | Deadbug, Prancha Lateral | Dor lombar aguda. | Peso Corporal |
-| Abdominal Supra | Reto Abdominal | Abdominal na Máquina | Protusões discais cervicais. | Peso Corporal |
+| Exercício | Músculo Alvo | Substitutos | Contraindicações / Alertas | Tag de Equipamento | Tempo por rep. (s) |
+|---|---|---|---|---|---|
+| Prancha Abdominal | Transverso do abdome | Deadbug, Prancha Lateral | Dor lombar aguda. | Peso Corporal | 30 (isométrico, por série) |
+| Abdominal Supra | Reto Abdominal | Abdominal na Máquina | Protusões discais cervicais. | Peso Corporal | 2 |
 """
 
 
@@ -84,9 +84,9 @@ class TestFiltroEquipamento:
         """Valor 'Elásticos' (plural) normalizado para 'Elástico'."""
         conteudo = (
             "## Grupo\n\n"
-            "| Exercício | Músculo Alvo | Substitutos | Contraindicações / Alertas | Tag de Equipamento |\n"
-            "|---|---|---|---|---|\n"
-            "| Exercício Elástico | Bíceps | Rosca Direta | Nenhuma. | Elástico |\n"
+            "| Exercício | Músculo Alvo | Substitutos | Contraindicações / Alertas | Tag de Equipamento | Tempo por rep. (s) |\n"
+            "|---|---|---|---|---|---|\n"
+            "| Exercício Elástico | Bíceps | Rosca Direta | Nenhuma. | Elástico | 3 |\n"
         )
         arquivo = tmp_path / "ref.md"
         arquivo.write_text(conteudo, encoding="utf-8")
