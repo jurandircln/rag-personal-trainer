@@ -83,6 +83,9 @@ if "rodadas_followup" not in st.session_state:
 if "ultimas_fontes" not in st.session_state:
     st.session_state["ultimas_fontes"] = []
 
+if "dados_aluno" not in st.session_state:
+    st.session_state["dados_aluno"] = {}
+
 # ---------------------------------------------------------------------------
 # ESTADO 1: Anamnese
 # ---------------------------------------------------------------------------
@@ -141,6 +144,7 @@ if st.session_state["estado"] == "anamnese":
                 "Nível de condicionamento": nivel,
             }
             st.session_state["contexto_aluno"] = formatar_contexto_aluno(dados)
+            st.session_state["dados_aluno"] = dados
             st.session_state["estado"] = "pergunta"
             st.rerun()
 
@@ -210,10 +214,14 @@ elif st.session_state["estado"] == "resposta":
 
             with st.spinner("🤖 Aguarde enquanto estou estudando o seu caso..."):
                 resultados = searcher.buscar(historico[0]["content"])
+                dados_aluno = st.session_state.get("dados_aluno", {})
                 resposta = generator.gerar(
                     query=query_completa,
                     resultados=resultados,
                     contexto_aluno=st.session_state["contexto_aluno"],
+                    equipamentos=dados_aluno.get("Equipamentos disponíveis", []) or None,
+                    nivel=dados_aluno.get("Nível de condicionamento", ""),
+                    restricoes=dados_aluno.get("Lesões ou restrições", ""),
                 )
 
             # Adiciona resposta ao histórico e armazena fontes no session_state
@@ -229,9 +237,12 @@ elif st.session_state["estado"] == "resposta":
                     "Execute: `python scripts/ingest.py --caminho data/raw/` "
                     "com QDRANT_URL e QDRANT_API_KEY apontando para o Qdrant Cloud."
                 )
-                logger.error("Collection não encontrada no Qdrant: %s", e)
             else:
-                raise
+                st.error(
+                    f"Erro na conexão com o Qdrant (status {e.status_code}). "
+                    "Verifique QDRANT_URL e QDRANT_API_KEY nos secrets do Streamlit Cloud."
+                )
+            logger.error("Erro do Qdrant: %s", e)
         except Exception as e:
             logger.error("Erro ao processar a pergunta: %s", e, exc_info=True)
             st.error("Ocorreu um erro ao processar a pergunta. Tente novamente.")
