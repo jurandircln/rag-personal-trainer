@@ -261,3 +261,58 @@ class TestMontarPromptComMetodologia:
         )
 
         assert "[METODOLOGIA" not in prompt
+
+
+# ---------------------------------------------------------------------------
+# Testes de montar_prompt com catálogo de exercícios
+# ---------------------------------------------------------------------------
+
+
+class TestMontarPromptComCatalogo:
+    """Testes para prompt com catálogo de exercícios filtrado."""
+
+    def test_prompt_com_catalogo_injeta_secao_catalogo(self, resultados_exemplo) -> None:
+        """Prompt com catalogo_filtrado contém seção [CATÁLOGO DE EXERCÍCIOS]."""
+        catalogo_md = "## Core\n\n| Prancha | ... | Peso Corporal |"
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno="",
+            catalogo_filtrado=catalogo_md,
+        )
+        assert "[CATÁLOGO DE EXERCÍCIOS" in prompt
+        assert "Prancha" in prompt
+
+    def test_prompt_com_catalogo_inclui_justificativa(self, resultados_exemplo) -> None:
+        """Template inclui seção Justificativa Personalizada quando catálogo presente."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno="",
+            catalogo_filtrado="## Core\n\n| Prancha |",
+        )
+        assert "Justificativa Personalizada" in prompt
+
+    def test_prompt_sem_catalogo_nao_tem_justificativa(self, resultados_exemplo) -> None:
+        """Template NÃO inclui Justificativa Personalizada quando catálogo ausente."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno="",
+        )
+        assert "Justificativa Personalizada" not in prompt
+
+    def test_prompt_catalogo_string_vazia_tratado_como_none(self, resultados_exemplo) -> None:
+        """catalogo_filtrado='' é tratado internamente como None (sem seção)."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno="",
+            catalogo_filtrado="",
+        )
+        assert "[CATÁLOGO DE EXERCÍCIOS" not in prompt
+        assert "Justificativa Personalizada" not in prompt
