@@ -261,3 +261,146 @@ class TestMontarPromptComMetodologia:
         )
 
         assert "[METODOLOGIA" not in prompt
+
+
+# ---------------------------------------------------------------------------
+# Testes de montar_prompt com catálogo de exercícios
+# ---------------------------------------------------------------------------
+
+
+class TestMontarPromptComCatalogo:
+    """Testes para prompt com catálogo de exercícios filtrado."""
+
+    def test_prompt_com_catalogo_injeta_secao_catalogo(self, resultados_exemplo) -> None:
+        """Prompt com catalogo_filtrado contém seção [CATÁLOGO DE EXERCÍCIOS]."""
+        catalogo_md = "## Core\n\n| Prancha | ... | Peso Corporal |"
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno="",
+            catalogo_filtrado=catalogo_md,
+        )
+        assert "[CATÁLOGO DE EXERCÍCIOS" in prompt
+        assert "Prancha" in prompt
+
+    def test_prompt_com_catalogo_inclui_justificativa(self, resultados_exemplo) -> None:
+        """Template inclui seção Justificativa Personalizada quando catálogo presente."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno="",
+            catalogo_filtrado="## Core\n\n| Prancha |",
+        )
+        assert "Justificativa Personalizada" in prompt
+
+    def test_prompt_sem_catalogo_nao_tem_justificativa(self, resultados_exemplo) -> None:
+        """Template NÃO inclui Justificativa Personalizada quando catálogo ausente."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno="",
+        )
+        assert "Justificativa Personalizada" not in prompt
+
+    def test_prompt_catalogo_string_vazia_tratado_como_none(self, resultados_exemplo) -> None:
+        """catalogo_filtrado='' é tratado internamente como None (sem seção)."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=resultados_exemplo,
+            metodologia="",
+            contexto_aluno="",
+            catalogo_filtrado="",
+        )
+        assert "[CATÁLOGO DE EXERCÍCIOS" not in prompt
+        assert "Justificativa Personalizada" not in prompt
+
+
+# ---------------------------------------------------------------------------
+# Testes de RAGGenerator com catálogo
+# ---------------------------------------------------------------------------
+
+
+class TestRAGGeneratorComCatalogo:
+    """Testes de integração do RAGGenerator com o CatalogoExercicios."""
+
+    def test_gerar_com_equipamentos_e_nivel_ativa_catalogo(
+        self,
+        mocker,
+        mock_chat_nvidia,
+        settings_mock,
+        resultados_exemplo,
+    ) -> None:
+        """gerar() com equipamentos e nivel chama montar_prompt com catalogo_filtrado não-None."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
+
+        catalogo_mock = mocker.MagicMock()
+        catalogo_mock.filtrar.return_value = "## Core\n\n| Prancha | Peso Corporal |"
+        mocker.patch(
+            "src.generation.llm.CatalogoExercicios",
+            return_value=catalogo_mock,
+        )
+
+        mock_montar = mocker.patch("src.generation.llm.montar_prompt", return_value="prompt_mock")
+
+        from src.generation.llm import RAGGenerator
+
+        gerador = RAGGenerator(settings=settings_mock)
+        gerador.gerar(
+            "Criar treino",
+            resultados_exemplo,
+            contexto_aluno="Aluno: João",
+            equipamentos=["Máquinas"],
+            nivel="Iniciante",
+            restricoes="dor no joelho",
+        )
+
+        mock_montar.assert_called_once()
+        _, kwargs = mock_montar.call_args
+        assert kwargs.get("catalogo_filtrado") is not None
+
+    def test_gerar_sem_equipamentos_nao_ativa_catalogo(
+        self,
+        mocker,
+        mock_chat_nvidia,
+        settings_mock,
+        resultados_exemplo,
+    ) -> None:
+        """gerar() sem equipamentos não ativa o catálogo (retrocompatível)."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
+        mocker.patch("src.generation.llm.CatalogoExercicios")
+
+        mock_montar = mocker.patch("src.generation.llm.montar_prompt", return_value="prompt_mock")
+
+        from src.generation.llm import RAGGenerator
+
+        gerador = RAGGenerator(settings=settings_mock)
+        gerador.gerar("Criar treino", resultados_exemplo)
+
+        mock_montar.assert_called_once()
+        _, kwargs = mock_montar.call_args
+        assert "catalogo_filtrado" not in kwargs or kwargs.get("catalogo_filtrado") is None
+
+    def test_gerar_com_equipamentos_sem_nivel_nao_ativa_catalogo(
+        self,
+        mocker,
+        mock_chat_nvidia,
+        settings_mock,
+        resultados_exemplo,
+    ) -> None:
+        """gerar() com equipamentos mas sem nivel não ativa catálogo."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
+        mocker.patch("src.generation.llm.CatalogoExercicios")
+
+        mock_montar = mocker.patch("src.generation.llm.montar_prompt", return_value="prompt_mock")
+
+        from src.generation.llm import RAGGenerator
+
+        gerador = RAGGenerator(settings=settings_mock)
+        gerador.gerar("Criar treino", resultados_exemplo, equipamentos=["Máquinas"], nivel="")
+
+        mock_montar.assert_called_once()
+        _, kwargs = mock_montar.call_args
+        assert "catalogo_filtrado" not in kwargs or kwargs.get("catalogo_filtrado") is None

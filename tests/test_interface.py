@@ -122,3 +122,50 @@ def test_formatar_contexto_aluno_sem_lesoes():
     contexto = formatar_contexto_aluno(dados)
 
     assert "nenhuma" in contexto
+
+
+def test_fluxo_busca_e_geracao_com_dados_aluno(settings_mock, resultados_exemplo):
+    """Garante que gerar() é chamado com equipamentos, nivel e restricoes do session_state."""
+    from src.retrieval.searcher import SemanticSearcher
+    from src.generation.llm import RAGGenerator
+
+    with patch('src.retrieval.searcher.SentenceTransformer'), \
+         patch('src.retrieval.searcher.QdrantClient') as mock_qdrant, \
+         patch('src.generation.llm.ChatNVIDIA') as mock_llm, \
+         patch('src.generation.llm._carregar_metodologia', return_value=""), \
+         patch('src.generation.llm.CatalogoExercicios'):
+
+        mock_qdrant.return_value.query_points.return_value.points = [
+            MagicMock(payload={
+                'conteudo': r.chunk.conteudo,
+                'fonte': r.chunk.fonte,
+                'pagina': r.chunk.pagina,
+                'chunk_id': r.chunk.chunk_id,
+            }, score=r.score)
+            for r in resultados_exemplo
+        ]
+        mock_llm.return_value.invoke.return_value = MagicMock(
+            content="Resposta com catálogo."
+        )
+
+        searcher = SemanticSearcher(settings_mock)
+        generator = RAGGenerator(settings_mock)
+
+        dados_aluno = {
+            "Equipamentos disponíveis": ["Máquinas"],
+            "Nível de condicionamento": "Iniciante",
+            "Lesões ou restrições": "dor no joelho",
+        }
+
+        resultados = searcher.buscar("como montar treino?")
+        resposta = generator.gerar(
+            "como montar treino?",
+            resultados,
+            contexto_aluno="Aluno: João",
+            equipamentos=dados_aluno.get("Equipamentos disponíveis", []) or None,
+            nivel=dados_aluno.get("Nível de condicionamento", ""),
+            restricoes=dados_aluno.get("Lesões ou restrições", ""),
+        )
+
+        assert isinstance(resposta, RespostaRAG)
+        assert resposta.texto == "Resposta com catálogo."

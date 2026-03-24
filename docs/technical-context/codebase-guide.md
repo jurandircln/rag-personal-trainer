@@ -9,6 +9,10 @@ src/
 ├── generation/  — Geração de texto via LLM
 ├── interface/   — Interface Streamlit
 └── config/      — Configurações centralizadas
+
+.streamlit/
+├── config.toml   — tema visual (versionado; lido pelo Streamlit Cloud)
+└── secrets.toml  — segredos de runtime (ignorado pelo git)
 ```
 
 ## Fluxo Principal
@@ -93,6 +97,12 @@ query → SemanticSearcher → Qdrant → RAGGenerator → NVIDIA NIM → Respos
 **`app.py`** — Aplicação Streamlit com `@st.cache_resource`; exibe pergunta, resposta e fontes:
 - Usa `SemanticSearcher` e `RAGGenerator` diretamente como módulos Python
 - `@st.cache_resource` garante que os componentes sejam instanciados uma única vez por sessão
+
+**`.streamlit/config.toml`** — Tema visual do app:
+- `base = "light"`, `backgroundColor = "#ffffff"`, `primaryColor = "#0068C9"`
+- Lido automaticamente pelo Streamlit (local e Streamlit Cloud)
+- Versionado no repositório; **não contém segredos**
+- `.streamlit/secrets.toml` está no `.gitignore` e nunca deve ser commitado
 
 ---
 

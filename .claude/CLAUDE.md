@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # CLAUDE.md — Jarvis Personal Trainer
 
 ## Project Description
@@ -88,13 +92,35 @@ Incorreto: docstring ou comentário em inglês.
 
 ---
 
+## Commands
+
+```bash
+# Rodar todos os testes
+pytest tests/ -v
+
+# Rodar um único teste
+pytest tests/test_loader.py -v -k "test_carregar_arquivo"
+
+# Subir Qdrant + app via Docker Compose
+docker-compose up --build
+# Qdrant: http://localhost:6333/dashboard  |  App: http://localhost:8501
+
+# Indexar documentos (requer Qdrant em execução)
+python scripts/ingest.py --caminho data/raw/
+```
+
+Os testes usam mocks e **não exigem** Qdrant nem NVIDIA NIM em execução.
+
+---
+
 ## Environment Setup
 
 Copy `.env.example` to `.env` and fill in the required values. Never add `.env` to version control.
 
 The application expects the following environment variables (see `.env.example` for the full list):
-- `NVIDIA_NIM_API_KEY` — API key for the NVIDIA NIM endpoint
-- `QDRANT_HOST` / `QDRANT_PORT` — connection details for the local Qdrant instance
+- `NVIDIA_API_KEY` — API key for the NVIDIA NIM endpoint
+- **Modo local (Docker):** `QDRANT_HOST` + `QDRANT_PORT`
+- **Modo cloud:** `QDRANT_URL` + `QDRANT_API_KEY` — quando `QDRANT_URL` está definida, `Settings.usar_qdrant_cloud` retorna `True` e `QDRANT_HOST` é ignorado
 
 Run Qdrant locally via Docker before starting the application.
 
