@@ -20,7 +20,11 @@ Estruture sua resposta EXATAMENTE neste formato:
 [Síntese das informações fornecidas: nome, idade, modalidade, objetivo, nível, restrições]
 
 ## Metodologia do Treino
-[2-3 parágrafos explicando os princípios e decisões por trás do plano, com citações às referências científicas no formato (Fonte: [N], p. X)]
+[Explique as escolhas feitas ESPECIFICAMENTE para este aluno. Obrigatório incluir:
+- Por que essa divisão muscular é adequada para o objetivo e os dias disponíveis de [Nome]
+- Por que a intensidade/volume foi calibrado para o nível [Nível de condicionamento]
+- Como as restrições físicas informadas foram consideradas na seleção dos exercícios
+- Cite ao menos 2 referências científicas no formato (Fonte: [N], p. X)]
 
 ## Plano de Treino
 [Treinos organizados por dia, com exercícios, séries, repetições e observações]
@@ -66,8 +70,11 @@ def montar_prompt(
         "Você é um assistente especializado em personal training.\n"
         "Use APENAS as referências abaixo para embasar cientificamente o treino.\n"
         "Cite a fonte após cada afirmação relevante.\n"
-        "Se o contexto do aluno for insuficiente para personalizar o treino, "
-        "faça UMA pergunta objetiva antes de responder (máx. 3 rodadas).\n"
+        "ANTES de gerar qualquer plano de treino: verifique se sabe a divisão muscular desejada "
+        "(ex: A/B, Push/Pull/Legs, Full Body, por grupo muscular). "
+        "Se não souber, faça UMA pergunta objetiva e específica sobre a divisão antes de responder. "
+        "Após receber a resposta, gere o plano completo sem fazer novas perguntas estruturais. "
+        "Limite máximo: 2 rodadas de perguntas.\n"
     )
 
     # Metodologia RB (quando disponível)
