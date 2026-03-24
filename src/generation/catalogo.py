@@ -113,14 +113,8 @@ class CatalogoExercicios:
         # Parseia o catálogo por grupos (## headers)
         grupos = self._parsear_grupos()
         secoes_resultado = []
-        algum_exercicio_passou_equipamento = False
 
         for nome_grupo, linhas_tabela in grupos:
-            # Verifica se algum exercício do grupo passa pelo filtro de equipamento
-            # antes de aplicar o filtro de contraindicações
-            if self._grupo_tem_exercicio_com_equipamento(linhas_tabela, tags_disponiveis):
-                algum_exercicio_passou_equipamento = True
-
             exercicios_grupo = self._filtrar_grupo(
                 linhas_tabela, tags_disponiveis, tag_priorizar, tokens_restricao
             )
@@ -170,20 +164,6 @@ class CatalogoExercicios:
         partes = linha.split("|")
         # Remove primeiro e último (vazios pelo | externo)
         return [p.strip() for p in partes[1:-1]]
-
-    def _grupo_tem_exercicio_com_equipamento(
-        self, linhas: list, tags_disponiveis: list
-    ) -> bool:
-        """Verifica se alguma linha do grupo possui tag de equipamento disponível."""
-        tags_lower = [t.lower() for t in tags_disponiveis]
-        for linha in linhas:
-            celulas = self._parsear_celulas(linha)
-            if len(celulas) < 5:
-                continue
-            tag = celulas[4].strip().lower()
-            if tag in tags_lower:
-                return True
-        return False
 
     def _filtrar_grupo(
         self,
