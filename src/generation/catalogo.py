@@ -89,7 +89,7 @@ class CatalogoExercicios:
         equipamentos: list,
         nivel: str,
         restricoes: str,
-    ):
+    ) -> "str | None":
         """Filtra exercícios por equipamento, nível e contraindicações.
 
         Args:
@@ -135,12 +135,7 @@ class CatalogoExercicios:
 
         if not secoes_resultado:
             logger.debug("Nenhum exercício após filtragem para equipamentos=%s.", tags_disponiveis)
-            # Retorna None apenas quando nenhum exercício passou pelo filtro de equipamento.
-            # Se exercícios foram encontrados mas todos removidos por contraindicações,
-            # retorna string vazia para distinguir os dois casos.
-            if not algum_exercicio_passou_equipamento:
-                return None
-            return ""
+            return None
 
         return "\n\n".join(secoes_resultado)
 
