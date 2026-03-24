@@ -37,7 +37,7 @@ objetivo. Use linguagem direta e técnica.]
 
 def montar_prompt(
     query: str,
-    resultados: list,
+    resultados: list[ResultadoBusca],
     metodologia: str = "",
     contexto_aluno: str = "",
     catalogo_filtrado=None,
