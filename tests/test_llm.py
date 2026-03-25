@@ -109,6 +109,25 @@ class TestRAGGenerator:
         # A mesma fonte deve aparecer apenas uma vez
         assert resposta.fontes.count("mesmo_arquivo.pdf") == 1
 
+    def test_gerar_instancia_llm_com_max_tokens(
+        self,
+        mocker,
+        settings_mock,
+    ) -> None:
+        """Verifica que ChatNVIDIA é instanciado com max_tokens para evitar truncamento."""
+        mocker.patch("src.generation.llm._carregar_metodologia", return_value="")
+        mock_nvidia_cls = mocker.patch("src.generation.llm.ChatNVIDIA")
+        mock_nvidia_cls.return_value.invoke.return_value = mocker.MagicMock(
+            content="resposta"
+        )
+
+        from src.generation.llm import RAGGenerator
+        RAGGenerator(settings=settings_mock)
+
+        _, kwargs = mock_nvidia_cls.call_args
+        assert "max_tokens" in kwargs
+        assert kwargs["max_tokens"] > 1024
+
 
 # ---------------------------------------------------------------------------
 # Testes de _carregar_metodologia

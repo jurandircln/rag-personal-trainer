@@ -58,6 +58,7 @@ class RAGGenerator:
             model=settings.llm_model,
             api_key=settings.nvidia_api_key,
             base_url=settings.nvidia_base_url,
+            max_tokens=settings.llm_max_tokens,
         )
         # Carrega a metodologia uma única vez por instância
         self.metodologia = _carregar_metodologia()
