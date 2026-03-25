@@ -13,8 +13,8 @@ O diferencial não é só velocidade: é rastreabilidade. Cada exercício, cada 
 ## Como funciona
 
 ```
-1. Personal descreve o aluno
-   └─ Objetivo, restrições, histórico, disponibilidade de treino
+1. Personal preenche o formulário de anamnese
+   └─ Nome, objetivo, nível, dias disponíveis, equipamentos, restrições
 
 2. Jarvis recupera os materiais relevantes
    └─ Busca semântica nos PDFs e documentos indexados (Qdrant)
@@ -22,8 +22,8 @@ O diferencial não é só velocidade: é rastreabilidade. Cada exercício, cada 
 3. Agente faz perguntas complementares (se necessário)
    └─ Até 3 rodadas para garantir contexto suficiente
 
-4. Jarvis entrega o plano + fontes + download em PDF
-   └─ Exercícios organizados por sessão, com referências documentais
+4. Jarvis entrega o protocolo periodizado completo
+   └─ 4–5 semanas, cada semana em aba separada, com fontes documentais
 ```
 
 ---
@@ -95,10 +95,10 @@ docker-compose up --build
 **Fluxo básico na interface:**
 
 1. Abra o Jarvis no navegador (`http://localhost:8501`)
-2. Na caixa de mensagem, descreva o aluno: objetivos, restrições, histórico, frequência de treino
-3. O agente pode fazer perguntas complementares — responda na mesma caixa
-4. Receba o plano de treino com exercícios, séries e as fontes que embasaram cada decisão
-5. Clique em **Baixar PDF** para exportar o plano formatado
+2. Preencha o formulário de anamnese: nome, objetivo, nível, dias/semana, equipamentos, restrições
+3. Na próxima tela, descreva o que precisa (ex.: "Monte um programa de força de 4 semanas")
+4. O agente pode fazer perguntas complementares — responda na mesma caixa
+5. Receba o protocolo periodizado completo com cada semana em uma aba separada
 
 ---
 
