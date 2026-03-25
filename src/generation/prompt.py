@@ -95,10 +95,58 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 - [exercício — séries×reps (método)]
 
 ## SEMANA 3 — [nome descritivo]
-[mesma estrutura completa — NUNCA usar reticências]
+### Dia 1 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
+
+### Dia 2 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
 
 ## SEMANA 4 — [nome descritivo]
-[mesma estrutura completa — NUNCA usar reticências]
+### Dia 1 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
+
+### Dia 2 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
 
 ## Fontes Consultadas
 [lista numerada com as referências utilizadas: [N] Fonte, p. X — trecho relevante]

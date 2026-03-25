@@ -293,6 +293,27 @@ class TestMontarPromptComMetodologia:
         )
         assert "bi-set" in prompt.lower()
 
+    def test_prompt_instrui_minimo_fortalecimento_por_grupo(self) -> None:
+        """Verifica que o prompt instrui mínimo de exercícios por grupo muscular."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=[],
+            metodologia="",
+            contexto_aluno="",
+        )
+        assert "músculos pequenos" in prompt.lower()
+        assert "músculos grandes" in prompt.lower()
+
+    def test_prompt_instrui_semanas_completas_sem_abreviacao(self) -> None:
+        """Verifica que o prompt proíbe abreviação de semanas com reticências."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=[],
+            metodologia="",
+            contexto_aluno="",
+        )
+        assert "4 semanas completas" in prompt.lower() and "pelo menos 4" in prompt.lower()
+
 
 # ---------------------------------------------------------------------------
 # Testes de montar_prompt com catálogo de exercícios
