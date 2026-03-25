@@ -35,6 +35,8 @@ class Settings:
         self.llm_model: str = os.environ.get(
             "LLM_MODEL", "meta/llama-3.1-70b-instruct"
         )
+        # Máximo de tokens na resposta do LLM (padrão: 4096 — limite do Llama 3.1 70B no NIM)
+        self.llm_max_tokens: int = int(os.environ.get("LLM_MAX_TOKENS", "4096"))
 
         # --- Configurações do Qdrant ---
         # Modo cloud: QDRANT_URL + QDRANT_API_KEY
