@@ -21,6 +21,11 @@ _INSTRUCAO_BASE = (
     "Gere SEMPRE um protocolo completo periodizado com múltiplas semanas adaptado ao "
     "contexto do aluno: iniciante → tipicamente 4 semanas; "
     "intermediário/avançado → tipicamente 5 semanas.\n"
+    "SEMPRE gere pelo menos 4 semanas completas — nunca abrevie ou use reticências (...).\n"
+    "Quantidade mínima de exercícios de FORTALECIMENTO por grupo muscular em cada sessão: "
+    "músculos pequenos (bíceps, tríceps, ombros, panturrilha) → mínimo 3 exercícios; "
+    "músculos grandes (peitoral, costas, quadríceps, posteriores de coxa, glúteo, core) "
+    "→ mínimo 4 exercícios.\n"
     "Para cada exercício de fortalecimento, inclua o método no formato: "
     "Exercício — séries×reps (método, ex: bi-set com Exercício Y).\n"
 )
@@ -50,10 +55,98 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 - [exercício — séries×reps (método, ex: bi-set com Exercício Y)]
 
 ### Dia 2 — [foco do dia]
-...
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
 
 ## SEMANA 2 — [nome descritivo]
-...
+### Dia 1 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
+
+### Dia 2 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
+
+## SEMANA 3 — [nome descritivo]
+### Dia 1 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
+
+### Dia 2 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
+
+## SEMANA 4 — [nome descritivo]
+### Dia 1 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
+
+### Dia 2 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
+
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método)]
 
 ## Fontes Consultadas
 [lista numerada com as referências utilizadas: [N] Fonte, p. X — trecho relevante]
