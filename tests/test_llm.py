@@ -284,14 +284,14 @@ class TestMontarPromptComMetodologia:
         assert "semanas" in prompt.lower()
 
     def test_prompt_instrui_metodo_por_exercicio(self) -> None:
-        """Verifica que o prompt instrui incluir método por exercício no formato correto."""
+        """Verifica que o prompt instrui incluir método de treino por exercício (ex: bi-set)."""
         prompt = montar_prompt(
             query="Criar treino",
             resultados=[],
             metodologia="",
             contexto_aluno="",
         )
-        assert "bi-set" in prompt.lower() or "método" in prompt.lower()
+        assert "bi-set" in prompt.lower()
 
 
 # ---------------------------------------------------------------------------
