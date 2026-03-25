@@ -329,18 +329,3 @@ elif st.session_state["estado"] == "resposta":
                     st.session_state["historico_conversa"] = historico
                     st.session_state["rodadas_followup"] = rodadas + 1
                     st.rerun()
-        else:
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("Nova consulta (mesmo aluno)"):
-                    st.session_state["estado"] = "pergunta"
-                    st.session_state["historico_conversa"] = []
-                    st.session_state["rodadas_followup"] = 0
-                    st.rerun()
-            with col2:
-                if st.button("Nova consulta (novo aluno)"):
-                    st.session_state["estado"] = "anamnese"
-                    st.session_state["contexto_aluno"] = ""
-                    st.session_state["historico_conversa"] = []
-                    st.session_state["rodadas_followup"] = 0
-                    st.rerun()

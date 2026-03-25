@@ -22,131 +22,117 @@ _INSTRUCAO_BASE = (
     "contexto do aluno: iniciante → tipicamente 4 semanas; "
     "intermediário/avançado → tipicamente 5 semanas.\n"
     "SEMPRE gere pelo menos 4 semanas completas — nunca abrevie ou use reticências (...).\n"
+    "O número de DIAS por semana DEVE ser exatamente igual ao campo 'Dias disponíveis por semana' "
+    "informado no contexto do aluno. Ex.: se o aluno tem 4 dias → gere exatamente 4 dias em cada semana.\n"
     "Quantidade mínima de exercícios de FORTALECIMENTO por grupo muscular em cada sessão: "
     "músculos pequenos (bíceps, tríceps, ombros, panturrilha) → mínimo 3 exercícios; "
     "músculos grandes (peitoral, costas, quadríceps, posteriores de coxa, glúteo, core) "
     "→ mínimo 4 exercícios.\n"
-    "Para cada exercício de fortalecimento, inclua o método no formato: "
-    "Exercício — séries×reps (método, ex: bi-set com Exercício Y).\n"
+    "Dentro da seção Fortalecimento, organize os exercícios por grupo muscular usando "
+    "sub-headers #### (ex.: #### Peitoral, #### Tríceps).\n"
+    "Formato obrigatório de cada exercício: duas linhas — "
+    "primeira linha: nome do exercício com bullet (*); "
+    "segunda linha (indentada com 2 espaços): 🔁 N séries × N–N reps OU ⏱️ Ns. "
+    "Exemplo: * Supino reto com barra\\n  🔁 4 séries × 6–8 reps\n"
+    "A seção '## Resumo do Aluno' deve ser um parágrafo contínuo, NÃO bullet points.\n"
 )
 
 # Template de saída unificado — os marcadores ## SEMANA N são parseados pela interface
 _TEMPLATE_SAIDA = """Estruture sua resposta EXATAMENTE neste formato. Use os marcadores de seção exatamente como indicado.
 
+ATENÇÃO: O número de dias mostrado abaixo (Dia 1, Dia 2) é apenas exemplo estrutural.
+Você DEVE gerar exatamente N dias por semana, onde N = 'Dias disponíveis por semana' do aluno.
+
 ## Resumo do Aluno
-[Síntese: nome, idade, modalidade, objetivo, nível, restrições, dias/semana, tempo/sessão]
+[Parágrafo único com: nome, idade, modalidade, objetivo, nível, restrições, dias/semana, tempo/sessão. NÃO usar bullet points.]
 
 ## Metodologia do Treino
 [Raciocínio clínico para este aluno: divisão muscular escolhida, calibragem de volume/intensidade \
 por nível, como as restrições físicas foram consideradas na seleção dos exercícios.]
 
 ## SEMANA 1 — [nome descritivo, ex: Adaptação e Técnica]
-### Dia 1 — [foco do dia]
-**Liberação** (se necessário)
-- [exercício — duração]
 
-**Mobilidade** (se necessário)
-- [exercício — séries×reps]
+### 🗓️ Dia 1 — [foco do dia]
 
-**Ativação**
-- [exercício — séries×reps]
+### 🔓 Liberação Miofascial (Opcional)
 
-**Fortalecimento**
-- [exercício — séries×reps (método, ex: bi-set com Exercício Y)]
+* [nome do exercício]
+  ⏱️ [duração, ex: 60s]
 
-### Dia 2 — [foco do dia]
-**Liberação** (se necessário)
-- [exercício — duração]
+### 🤸 Mobilidade (Opcional)
 
-**Mobilidade** (se necessário)
-- [exercício — séries×reps]
+* [nome do exercício]
+  🔁 [N séries × N reps]
 
-**Ativação**
-- [exercício — séries×reps]
+### ⚡ Ativação
 
-**Fortalecimento**
-- [exercício — séries×reps (método)]
+* [nome do exercício]
+  🔁 [N séries × N reps]
+
+### 🏋️ Fortalecimento
+
+#### [Músculo Grande, ex: Peitoral]
+
+* [nome do exercício]
+  🔁 [N séries × N–N reps (método)]
+
+#### [Músculo Pequeno, ex: Tríceps]
+
+* [nome do exercício]
+  🔁 [N séries × N–N reps (método)]
+
+### 🧊 Observações
+
+* Descanso: [tempo entre séries]
+* Intensidade: [RPE ou %]
+
+### 🗓️ Dia 2 — [foco do dia]
+
+### 🔓 Liberação Miofascial (Opcional)
+
+* [nome do exercício]
+  ⏱️ [duração]
+
+### 🤸 Mobilidade (Opcional)
+
+* [nome do exercício]
+  🔁 [N séries × N reps]
+
+### ⚡ Ativação
+
+* [nome do exercício]
+  🔁 [N séries × N reps]
+
+### 🏋️ Fortalecimento
+
+#### [Músculo Grande]
+
+* [nome do exercício]
+  🔁 [N séries × N–N reps (método)]
+
+#### [Músculo Pequeno]
+
+* [nome do exercício]
+  🔁 [N séries × N–N reps (método)]
+
+### 🧊 Observações
+
+* Descanso: [tempo entre séries]
+* Intensidade: [RPE ou %]
+
+[continuar com Dia 3, Dia 4... até completar todos os dias do aluno]
 
 ## SEMANA 2 — [nome descritivo]
-### Dia 1 — [foco do dia]
-**Liberação** (se necessário)
-- [exercício — duração]
 
-**Mobilidade** (se necessário)
-- [exercício — séries×reps]
-
-**Ativação**
-- [exercício — séries×reps]
-
-**Fortalecimento**
-- [exercício — séries×reps (método)]
-
-### Dia 2 — [foco do dia]
-**Liberação** (se necessário)
-- [exercício — duração]
-
-**Mobilidade** (se necessário)
-- [exercício — séries×reps]
-
-**Ativação**
-- [exercício — séries×reps]
-
-**Fortalecimento**
-- [exercício — séries×reps (método)]
+[mesma estrutura da SEMANA 1 — todos os dias completos]
 
 ## SEMANA 3 — [nome descritivo]
-### Dia 1 — [foco do dia]
-**Liberação** (se necessário)
-- [exercício — duração]
 
-**Mobilidade** (se necessário)
-- [exercício — séries×reps]
-
-**Ativação**
-- [exercício — séries×reps]
-
-**Fortalecimento**
-- [exercício — séries×reps (método)]
-
-### Dia 2 — [foco do dia]
-**Liberação** (se necessário)
-- [exercício — duração]
-
-**Mobilidade** (se necessário)
-- [exercício — séries×reps]
-
-**Ativação**
-- [exercício — séries×reps]
-
-**Fortalecimento**
-- [exercício — séries×reps (método)]
+[mesma estrutura da SEMANA 1 — todos os dias completos]
 
 ## SEMANA 4 — [nome descritivo]
-### Dia 1 — [foco do dia]
-**Liberação** (se necessário)
-- [exercício — duração]
 
-**Mobilidade** (se necessário)
-- [exercício — séries×reps]
-
-**Ativação**
-- [exercício — séries×reps]
-
-**Fortalecimento**
-- [exercício — séries×reps (método)]
-
-### Dia 2 — [foco do dia]
-**Liberação** (se necessário)
-- [exercício — duração]
-
-**Mobilidade** (se necessário)
-- [exercício — séries×reps]
-
-**Ativação**
-- [exercício — séries×reps]
-
-**Fortalecimento**
-- [exercício — séries×reps (método)]
+[mesma estrutura da SEMANA 1 — todos os dias completos]
 
 ## Fontes Consultadas
 [lista numerada com as referências utilizadas: [N] Fonte, p. X — trecho relevante]
@@ -205,7 +191,8 @@ def montar_prompt(
             "- Exercícios marcados [SUBSTITUTO OBRIGATÓRIO] substituem obrigatoriamente o exercício "
             "original. Nunca sugira o exercício original quando houver substituto marcado.\n"
             "- Cada sessão deve ter 12 a 15 exercícios no total: 2-3 liberações (se necessário) + "
-            "3-4 mobilidades (se necessário) + 3-4 ativações + 5-7 fortalecimento. "
+            "3-4 mobilidades (se necessário) + 3-4 ativações + 5-8 fortalecimento "
+            "(respeitando o mínimo por grupo muscular definido acima). "
             "Use a coluna 'Tempo por rep. (s)' para dimensionar o tempo total de cada exercício.\n"
             f"{catalogo_filtrado}\n"
         )
