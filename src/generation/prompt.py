@@ -26,8 +26,7 @@ _INSTRUCAO_BASE = (
 )
 
 # Template de saída unificado — os marcadores ## SEMANA N são parseados pela interface
-_TEMPLATE_SAIDA = """
-Estruture sua resposta EXATAMENTE neste formato. Use os marcadores de seção exatamente como indicado.
+_TEMPLATE_SAIDA = """Estruture sua resposta EXATAMENTE neste formato. Use os marcadores de seção exatamente como indicado.
 
 ## Resumo do Aluno
 [Síntese: nome, idade, modalidade, objetivo, nível, restrições, dias/semana, tempo/sessão]
