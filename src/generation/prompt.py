@@ -191,7 +191,8 @@ def montar_prompt(
             "- Exercícios marcados [SUBSTITUTO OBRIGATÓRIO] substituem obrigatoriamente o exercício "
             "original. Nunca sugira o exercício original quando houver substituto marcado.\n"
             "- Cada sessão deve ter 12 a 15 exercícios no total: 2-3 liberações (se necessário) + "
-            "3-4 mobilidades (se necessário) + 3-4 ativações + 5-7 fortalecimento. "
+            "3-4 mobilidades (se necessário) + 3-4 ativações + 5-8 fortalecimento "
+            "(respeitando o mínimo por grupo muscular definido acima). "
             "Use a coluna 'Tempo por rep. (s)' para dimensionar o tempo total de cada exercício.\n"
             f"{catalogo_filtrado}\n"
         )

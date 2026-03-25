@@ -333,8 +333,9 @@ class TestMontarPromptComMetodologia:
             metodologia="",
             contexto_aluno="",
         )
-        # O template deve conter o ícone de repetições para guiar o formato
-        assert "🔁" in prompt or "séries ×" in prompt.lower()
+        # A instrução base deve conter a diretiva explícita de formato de duas linhas
+        assert "formato obrigatório" in prompt.lower()
+        assert "duas linhas" in prompt.lower()
 
 
 # ---------------------------------------------------------------------------
