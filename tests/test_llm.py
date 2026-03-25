@@ -239,7 +239,7 @@ class TestMontarPromptComMetodologia:
         assert "jiu-jitsu" in prompt
 
     def test_prompt_contem_template_de_saida(self, resultados_exemplo) -> None:
-        """Verifica que o template de saída estruturada está no prompt."""
+        """Verifica que o template de saída estruturada com semanas está no prompt."""
         prompt = montar_prompt(
             query="Criar treino",
             resultados=resultados_exemplo,
@@ -249,7 +249,8 @@ class TestMontarPromptComMetodologia:
 
         assert "Resumo do Aluno" in prompt
         assert "Metodologia do Treino" in prompt
-        assert "Plano de Treino" in prompt
+        assert "SEMANA" in prompt
+        assert "Fontes Consultadas" in prompt
 
     def test_prompt_sem_metodologia_nao_tem_secao_metodologia(self) -> None:
         """Verifica que prompt sem metodologia não inclui marcador de metodologia."""
@@ -261,6 +262,36 @@ class TestMontarPromptComMetodologia:
         )
 
         assert "[METODOLOGIA" not in prompt
+
+    def test_prompt_nao_instrui_citacao_inline(self) -> None:
+        """Verifica que o prompt não instrui citação inline após cada afirmação."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=[],
+            metodologia="",
+            contexto_aluno="",
+        )
+        assert "Cite a fonte após cada afirmação" not in prompt
+
+    def test_prompt_instrui_protocolo_periodizado(self) -> None:
+        """Verifica que o prompt instrui geração de protocolo com múltiplas semanas."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=[],
+            metodologia="",
+            contexto_aluno="",
+        )
+        assert "semanas" in prompt.lower()
+
+    def test_prompt_instrui_metodo_por_exercicio(self) -> None:
+        """Verifica que o prompt instrui incluir método de treino por exercício (ex: bi-set)."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=[],
+            metodologia="",
+            contexto_aluno="",
+        )
+        assert "bi-set" in prompt.lower()
 
 
 # ---------------------------------------------------------------------------
@@ -284,16 +315,17 @@ class TestMontarPromptComCatalogo:
         assert "[CATÁLOGO DE EXERCÍCIOS" in prompt
         assert "Prancha" in prompt
 
-    def test_prompt_com_catalogo_inclui_justificativa(self, resultados_exemplo) -> None:
-        """Template inclui seção Justificativa Personalizada quando catálogo presente."""
+    def test_prompt_com_catalogo_contem_instrucao_volume(self, resultados_exemplo) -> None:
+        """Template com catálogo contém instrução de 12-15 exercícios por sessão."""
+        catalogo_md = "## Core\n\n| Prancha | ... | Peso Corporal |"
         prompt = montar_prompt(
             query="Criar treino",
             resultados=resultados_exemplo,
             metodologia="",
             contexto_aluno="",
-            catalogo_filtrado="## Core\n\n| Prancha |",
+            catalogo_filtrado=catalogo_md,
         )
-        assert "Justificativa Personalizada" in prompt
+        assert "12 a 15" in prompt
 
     def test_prompt_sem_catalogo_nao_tem_justificativa(self, resultados_exemplo) -> None:
         """Template NÃO inclui Justificativa Personalizada quando catálogo ausente."""

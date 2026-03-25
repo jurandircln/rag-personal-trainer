@@ -12,30 +12,51 @@ from src.config.types import ResultadoBusca
 
 logger = logging.getLogger(__name__)
 
-# Seção base do template de saída (sempre presente)
-_TEMPLATE_SAIDA_BASE = """
-Estruture sua resposta EXATAMENTE neste formato:
+# Instrução base do sistema
+_INSTRUCAO_BASE = (
+    "Você é um assistente especializado em personal training.\n"
+    "Use APENAS as referências abaixo para embasar cientificamente o treino.\n"
+    "NÃO inclua citações de fontes de forma inline no texto — todas as referências "
+    "devem aparecer apenas na seção '## Fontes Consultadas' ao final da resposta.\n"
+    "Gere SEMPRE um protocolo completo periodizado com múltiplas semanas adaptado ao "
+    "contexto do aluno: iniciante → tipicamente 4 semanas; "
+    "intermediário/avançado → tipicamente 5 semanas.\n"
+    "Para cada exercício de fortalecimento, inclua o método no formato: "
+    "Exercício — séries×reps (método, ex: bi-set com Exercício Y).\n"
+)
+
+# Template de saída unificado — os marcadores ## SEMANA N são parseados pela interface
+_TEMPLATE_SAIDA = """Estruture sua resposta EXATAMENTE neste formato. Use os marcadores de seção exatamente como indicado.
 
 ## Resumo do Aluno
-[Síntese das informações fornecidas: nome, idade, modalidade, objetivo, nível, restrições]
+[Síntese: nome, idade, modalidade, objetivo, nível, restrições, dias/semana, tempo/sessão]
 
 ## Metodologia do Treino
-[Explique as escolhas feitas ESPECIFICAMENTE para este aluno. Obrigatório incluir:
-- Por que essa divisão muscular é adequada para o objetivo e os dias disponíveis de [Nome]
-- Por que a intensidade/volume foi calibrado para o nível [Nível de condicionamento]
-- Como as restrições físicas informadas foram consideradas na seleção dos exercícios
-- Cite ao menos 2 referências científicas no formato (Fonte: [N], p. X)]
+[Raciocínio clínico para este aluno: divisão muscular escolhida, calibragem de volume/intensidade \
+por nível, como as restrições físicas foram consideradas na seleção dos exercícios.]
 
-## Plano de Treino
-[Treinos organizados por dia, com exercícios, séries, repetições e observações]
-"""
+## SEMANA 1 — [nome descritivo, ex: Adaptação e Técnica]
+### Dia 1 — [foco do dia]
+**Liberação** (se necessário)
+- [exercício — duração]
 
-# Seção de justificativa — incluída somente quando o catálogo está ativo
-_SECAO_JUSTIFICATIVA = """
-## Justificativa Personalizada
-[Para cada decisão relevante: explique ao personal trainer por que aquele exercício \
-foi escolhido para ESTE aluno — nível, restrição física, equipamento disponível, \
-objetivo. Use linguagem direta e técnica.]
+**Mobilidade** (se necessário)
+- [exercício — séries×reps]
+
+**Ativação**
+- [exercício — séries×reps]
+
+**Fortalecimento**
+- [exercício — séries×reps (método, ex: bi-set com Exercício Y)]
+
+### Dia 2 — [foco do dia]
+...
+
+## SEMANA 2 — [nome descritivo]
+...
+
+## Fontes Consultadas
+[lista numerada com as referências utilizadas: [N] Fonte, p. X — trecho relevante]
 """
 
 
@@ -66,16 +87,7 @@ def montar_prompt(
     secoes = []
 
     # Instrução base do sistema
-    secoes.append(
-        "Você é um assistente especializado em personal training.\n"
-        "Use APENAS as referências abaixo para embasar cientificamente o treino.\n"
-        "Cite a fonte após cada afirmação relevante.\n"
-        "ANTES de gerar qualquer plano de treino: verifique se sabe a divisão muscular desejada "
-        "(ex: A/B, Push/Pull/Legs, Full Body, por grupo muscular). "
-        "Se não souber, faça UMA pergunta objetiva e específica sobre a divisão antes de responder. "
-        "Após receber a resposta, gere o plano completo sem fazer novas perguntas estruturais. "
-        "Limite máximo: 2 rodadas de perguntas.\n"
-    )
+    secoes.append(_INSTRUCAO_BASE)
 
     # Metodologia RB (quando disponível)
     if metodologia.strip():
@@ -99,10 +111,9 @@ def montar_prompt(
             "- Exercícios marcados [PRIORIZAR] devem ser a primeira escolha para o nível do aluno.\n"
             "- Exercícios marcados [SUBSTITUTO OBRIGATÓRIO] substituem obrigatoriamente o exercício "
             "original. Nunca sugira o exercício original quando houver substituto marcado.\n"
-            "- Use a coluna 'Tempo por rep. (s)' para dimensionar o volume: estime o tempo total "
-            "de cada exercício como (séries × repetições × tempo_por_rep_s + séries × 90s de descanso). "
-            "Distribua exercícios suficientes para preencher o tempo de sessão do aluno. "
-            "Exemplo: 60 min de sessão comporta tipicamente 6 a 8 exercícios com 3 a 4 séries cada.\n"
+            "- Cada sessão deve ter 12 a 15 exercícios no total: 2-3 liberações (se necessário) + "
+            "3-4 mobilidades (se necessário) + 3-4 ativações + 5-7 fortalecimento. "
+            "Use a coluna 'Tempo por rep. (s)' para dimensionar o tempo total de cada exercício.\n"
             f"{catalogo_filtrado}\n"
         )
         secoes.append(instrucoes_catalogo)
@@ -120,11 +131,8 @@ def montar_prompt(
         secoes.append("REFERÊNCIAS:\n" + "\n".join(linhas) + "\n")
         logger.debug("Prompt montado com %d referência(s).", len(resultados))
 
-    # Template de formato de saída (condicional por catálogo)
-    template = _TEMPLATE_SAIDA_BASE
-    if catalogo_filtrado is not None:
-        template = _TEMPLATE_SAIDA_BASE + _SECAO_JUSTIFICATIVA
-    secoes.append(template)
+    # Template de saída unificado
+    secoes.append(_TEMPLATE_SAIDA)
 
     # Pergunta do personal
     secoes.append(f"PERGUNTA: {query}")

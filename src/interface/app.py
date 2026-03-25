@@ -2,6 +2,7 @@
 import sys
 import os
 import logging
+import re
 
 from qdrant_client.http.exceptions import UnexpectedResponse
 
@@ -42,6 +43,41 @@ def formatar_contexto_aluno(dados: dict) -> str:
         f"Lesões ou restrições: {dados['Lesões ou restrições'] or 'nenhuma'}\n"
         f"Nível de condicionamento: {dados['Nível de condicionamento']}\n"
     )
+
+
+def _parsear_semanas(texto: str) -> dict:
+    """Divide o texto gerado pelo LLM em cabeçalho, semanas e fontes.
+
+    Args:
+        texto: resposta completa do LLM.
+
+    Returns:
+        Dict com chaves 'cabecalho' (str), 'semanas' (list[tuple[str, str]]) e 'fontes' (str).
+        'semanas' é vazia se nenhum marcador ## SEMANA N for encontrado (fallback).
+    """
+    # Divide no início de cada marcador ## SEMANA N, preservando o marcador em cada parte
+    partes = re.split(r"(?=^## SEMANA \d+)", texto, flags=re.MULTILINE)
+
+    cabecalho = partes[0].strip() if partes else ""
+    semanas = []
+    fontes = ""
+
+    for parte in partes[1:]:
+        # Verifica se esta parte contém a seção de fontes
+        match_fontes = re.search(r"^## Fontes Consultadas", parte, re.MULTILINE)
+        if match_fontes:
+            corpo_semana = parte[: match_fontes.start()]
+            fontes = parte[match_fontes.start() :].strip()
+        else:
+            corpo_semana = parte
+
+        # Extrai nome (primeira linha) e conteúdo (restante)
+        linhas = corpo_semana.strip().split("\n", 1)
+        nome = re.sub(r"^#+\s*", "", linhas[0]).strip()
+        conteudo = linhas[1].strip() if len(linhas) > 1 else ""
+        semanas.append((nome, conteudo))
+
+    return {"cabecalho": cabecalho, "semanas": semanas, "fontes": fontes}
 
 
 # ---------------------------------------------------------------------------
@@ -203,7 +239,19 @@ elif st.session_state["estado"] == "resposta":
         if mensagem["role"] == "user":
             st.markdown(f"**Você:** {mensagem['content']}")
         else:
-            st.markdown(mensagem["content"])
+            parsed = _parsear_semanas(mensagem["content"])
+            if parsed["cabecalho"]:
+                st.markdown(parsed["cabecalho"])
+            if parsed["semanas"]:
+                abas = st.tabs([nome for nome, _ in parsed["semanas"]])
+                for aba, (_, conteudo) in zip(abas, parsed["semanas"]):
+                    with aba:
+                        st.markdown(conteudo)
+            else:
+                # Fallback: exibe texto completo sem abas
+                st.markdown(mensagem["content"])
+            if parsed["fontes"]:
+                st.markdown(parsed["fontes"])
             st.divider()
 
     # Recupera fontes da última resposta (antes de processar nova mensagem)
@@ -223,7 +271,7 @@ elif st.session_state["estado"] == "resposta":
             )
 
             with st.spinner("🤖 Aguarde enquanto estou estudando o seu caso..."):
-                resultados = searcher.buscar(historico[0]["content"])
+                resultados = searcher.buscar(historico[0]["content"], top_k=10, max_por_fonte=3)
                 dados_aluno = st.session_state.get("dados_aluno", {})
                 resposta = generator.gerar(
                     query=query_completa,
@@ -258,12 +306,6 @@ elif st.session_state["estado"] == "resposta":
             st.error("Ocorreu um erro ao processar a pergunta. Tente novamente.")
 
     else:
-        # Exibe fontes consultadas (após resposta do assistente)
-        if ultimas_fontes:
-            st.markdown("**Fontes consultadas:**")
-            for fonte in ultimas_fontes:
-                st.markdown(f"- {fonte}")
-
         st.divider()
 
         rodadas = st.session_state["rodadas_followup"]
