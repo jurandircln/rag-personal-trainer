@@ -172,3 +172,112 @@ def test_fluxo_busca_e_geracao_com_dados_aluno(settings_mock, resultados_exemplo
 
         assert isinstance(resposta, RespostaRAG)
         assert resposta.texto == "Resposta com catálogo."
+
+
+# ---------------------------------------------------------------------------
+# Testes de _parsear_semanas
+# ---------------------------------------------------------------------------
+
+
+class TestParsearSemanas:
+    """Testes para a função _parsear_semanas da interface."""
+
+    def test_retorna_dict_com_chaves_corretas(self) -> None:
+        """Verifica que a função retorna dict com as três chaves esperadas."""
+        from src.interface.app import _parsear_semanas
+
+        resultado = _parsear_semanas("texto qualquer")
+
+        assert isinstance(resultado, dict)
+        assert "cabecalho" in resultado
+        assert "semanas" in resultado
+        assert "fontes" in resultado
+
+    def test_fallback_sem_marcadores_retorna_semanas_vazia(self) -> None:
+        """Texto sem marcadores ## SEMANA N retorna lista de semanas vazia."""
+        from src.interface.app import _parsear_semanas
+
+        texto = "## Resumo\nConteúdo\n\n## Metodologia\nMais conteúdo"
+        resultado = _parsear_semanas(texto)
+
+        assert resultado["semanas"] == []
+        assert resultado["cabecalho"] != ""
+
+    def test_extrai_cabecalho_antes_da_primeira_semana(self) -> None:
+        """Tudo antes do primeiro ## SEMANA N vai para cabecalho."""
+        from src.interface.app import _parsear_semanas
+
+        texto = "## Resumo do Aluno\nJoão\n\n## SEMANA 1 — Adaptação\nDia 1"
+        resultado = _parsear_semanas(texto)
+
+        assert "Resumo do Aluno" in resultado["cabecalho"]
+        assert "João" in resultado["cabecalho"]
+        assert "SEMANA 1" not in resultado["cabecalho"]
+
+    def test_extrai_uma_semana_como_tuple(self) -> None:
+        """Uma semana é extraída como tuple (nome, conteudo)."""
+        from src.interface.app import _parsear_semanas
+
+        texto = "cabeçalho\n\n## SEMANA 1 — Adaptação e Técnica\nDia 1 conteúdo"
+        resultado = _parsear_semanas(texto)
+
+        assert len(resultado["semanas"]) == 1
+        nome, conteudo = resultado["semanas"][0]
+        assert "SEMANA 1" in nome
+        assert "Adaptação e Técnica" in nome
+        assert "Dia 1 conteúdo" in conteudo
+
+    def test_extrai_multiplas_semanas(self) -> None:
+        """Múltiplos marcadores ## SEMANA N geram múltiplas semanas."""
+        from src.interface.app import _parsear_semanas
+
+        texto = (
+            "cabeçalho\n\n"
+            "## SEMANA 1 — Adaptação\nconteudo semana 1\n\n"
+            "## SEMANA 2 — Intensificação\nconteudo semana 2\n\n"
+            "## SEMANA 3 — Pico\nconteudo semana 3"
+        )
+        resultado = _parsear_semanas(texto)
+
+        assert len(resultado["semanas"]) == 3
+        assert "SEMANA 1" in resultado["semanas"][0][0]
+        assert "SEMANA 2" in resultado["semanas"][1][0]
+        assert "SEMANA 3" in resultado["semanas"][2][0]
+
+    def test_extrai_fontes_consultadas(self) -> None:
+        """Seção ## Fontes Consultadas é extraída para a chave 'fontes'."""
+        from src.interface.app import _parsear_semanas
+
+        texto = (
+            "cabeçalho\n\n"
+            "## SEMANA 1 — Adaptação\nconteudo\n\n"
+            "## Fontes Consultadas\n[1] fonte.pdf, p. 1 — trecho relevante"
+        )
+        resultado = _parsear_semanas(texto)
+
+        assert "Fontes Consultadas" in resultado["fontes"]
+        assert "fonte.pdf" in resultado["fontes"]
+
+    def test_sem_fontes_retorna_string_vazia(self) -> None:
+        """Texto sem ## Fontes Consultadas retorna fontes como string vazia."""
+        from src.interface.app import _parsear_semanas
+
+        texto = "cabeçalho\n\n## SEMANA 1 — Adaptação\nconteudo"
+        resultado = _parsear_semanas(texto)
+
+        assert resultado["fontes"] == ""
+
+    def test_fontes_nao_aparecem_no_conteudo_da_semana(self) -> None:
+        """O conteúdo de uma semana não deve incluir a seção de Fontes."""
+        from src.interface.app import _parsear_semanas
+
+        texto = (
+            "cabeçalho\n\n"
+            "## SEMANA 1 — Adaptação\nDia 1\n\n"
+            "## Fontes Consultadas\n[1] fonte.pdf"
+        )
+        resultado = _parsear_semanas(texto)
+
+        _, conteudo_semana1 = resultado["semanas"][0]
+        assert "Fontes Consultadas" not in conteudo_semana1
+        assert "fonte.pdf" not in conteudo_semana1
