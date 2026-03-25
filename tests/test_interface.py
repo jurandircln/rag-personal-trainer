@@ -281,3 +281,15 @@ class TestParsearSemanas:
         _, conteudo_semana1 = resultado["semanas"][0]
         assert "Fontes Consultadas" not in conteudo_semana1
         assert "fonte.pdf" not in conteudo_semana1
+
+    def test_fallback_fontes_sem_semanas_exibidas_no_cabecalho(self) -> None:
+        """Sem marcadores ## SEMANA N, Fontes Consultadas aparecem no cabecalho (exibidas pelo fallback)."""
+        from src.interface.app import _parsear_semanas
+
+        texto = "## Resumo\nConteúdo\n\n## Fontes Consultadas\n[1] fonte.pdf"
+        resultado = _parsear_semanas(texto)
+
+        # Sem semanas, o fallback exibe o texto completo incluindo as fontes
+        assert resultado["semanas"] == []
+        assert "Fontes Consultadas" in resultado["cabecalho"]
+        assert resultado["fontes"] == ""  # fontes só são extraídas quando dentro de uma semana

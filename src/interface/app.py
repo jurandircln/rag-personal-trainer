@@ -73,7 +73,7 @@ def _parsear_semanas(texto: str) -> dict:
 
         # Extrai nome (primeira linha) e conteúdo (restante)
         linhas = corpo_semana.strip().split("\n", 1)
-        nome = linhas[0].replace("## ", "").strip()
+        nome = re.sub(r"^#+\s*", "", linhas[0]).strip()
         conteudo = linhas[1].strip() if len(linhas) > 1 else ""
         semanas.append((nome, conteudo))
 
@@ -251,7 +251,6 @@ elif st.session_state["estado"] == "resposta":
                 # Fallback: exibe texto completo sem abas
                 st.markdown(mensagem["content"])
             if parsed["fontes"]:
-                st.divider()
                 st.markdown(parsed["fontes"])
             st.divider()
 
