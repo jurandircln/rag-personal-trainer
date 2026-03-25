@@ -31,9 +31,9 @@ _INSTRUCAO_BASE = (
     "Dentro da seção Fortalecimento, organize os exercícios por grupo muscular usando "
     "sub-headers #### (ex.: #### Peitoral, #### Tríceps).\n"
     "Formato obrigatório de cada exercício: duas linhas — "
-    "primeira linha: nome do exercício com bullet (*); "
-    "segunda linha (indentada com 2 espaços): 🔁 N séries × N–N reps OU ⏱️ Ns. "
-    "Exemplo: * Supino reto com barra\\n  🔁 4 séries × 6–8 reps\n"
+    "primeira linha: nome do exercício com bullet (-); "
+    "segunda linha (indentada com 2 espaços): N séries × N–N reps OU duração em segundos. "
+    "Exemplo: - Supino reto com barra\\n  4 séries × 6–8 reps\n"
     "A seção '## Resumo do Aluno' deve ser um parágrafo contínuo, NÃO bullet points.\n"
 )
 
@@ -52,70 +52,70 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 
 ## SEMANA 1 — [nome descritivo, ex: Adaptação e Técnica]
 
-### 🗓️ Dia 1 — [foco do dia]
+### Dia 1 — [foco do dia]
 
-### 🔓 Liberação Miofascial (Opcional)
-
-* [nome do exercício]
-  ⏱️ [duração, ex: 60s]
-
-### 🤸 Mobilidade (Opcional)
+### Liberação Miofascial (Opcional)
 
 * [nome do exercício]
-  🔁 [N séries × N reps]
+  [duração, ex: 60s]
 
-### ⚡ Ativação
+### Mobilidade (Opcional)
 
 * [nome do exercício]
-  🔁 [N séries × N reps]
+  [N séries × N reps]
 
-### 🏋️ Fortalecimento
+### Ativação
+
+* [nome do exercício]
+  [N séries × N reps]
+
+### Fortalecimento
 
 #### [Músculo Grande, ex: Peitoral]
 
 * [nome do exercício]
-  🔁 [N séries × N–N reps (método)]
+  [N séries × N–N reps (método)]
 
 #### [Músculo Pequeno, ex: Tríceps]
 
 * [nome do exercício]
-  🔁 [N séries × N–N reps (método)]
+  [N séries × N–N reps (método)]
 
-### 🧊 Observações
+### Observações
 
 * Descanso: [tempo entre séries]
 * Intensidade: [RPE ou %]
 
-### 🗓️ Dia 2 — [foco do dia]
+### Dia 2 — [foco do dia]
 
-### 🔓 Liberação Miofascial (Opcional)
-
-* [nome do exercício]
-  ⏱️ [duração]
-
-### 🤸 Mobilidade (Opcional)
+### Liberação Miofascial (Opcional)
 
 * [nome do exercício]
-  🔁 [N séries × N reps]
+  [duração]
 
-### ⚡ Ativação
+### Mobilidade (Opcional)
 
 * [nome do exercício]
-  🔁 [N séries × N reps]
+  [N séries × N reps]
 
-### 🏋️ Fortalecimento
+### Ativação
+
+* [nome do exercício]
+  [N séries × N reps]
+
+### Fortalecimento
 
 #### [Músculo Grande]
 
 * [nome do exercício]
-  🔁 [N séries × N–N reps (método)]
+  [N séries × N–N reps (método)]
 
 #### [Músculo Pequeno]
 
 * [nome do exercício]
-  🔁 [N séries × N–N reps (método)]
+  [N séries × N–N reps (método)]
 
-### 🧊 Observações
+### Observações
 
 * Descanso: [tempo entre séries]
 * Intensidade: [RPE ou %]
