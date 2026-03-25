@@ -306,8 +306,6 @@ elif st.session_state["estado"] == "resposta":
             st.error("Ocorreu um erro ao processar a pergunta. Tente novamente.")
 
     else:
-        st.divider()
-
         rodadas = st.session_state["rodadas_followup"]
 
         # Detecta se a última mensagem do assistente contém uma pergunta de follow-up
@@ -329,3 +327,11 @@ elif st.session_state["estado"] == "resposta":
                     st.session_state["historico_conversa"] = historico
                     st.session_state["rodadas_followup"] = rodadas + 1
                     st.rerun()
+
+        # Botão para iniciar nova consulta
+        if st.button("Nova consulta"):
+            st.session_state["estado"] = "anamnese"
+            st.session_state["contexto_aluno"] = ""
+            st.session_state["historico_conversa"] = []
+            st.session_state["rodadas_followup"] = 0
+            st.rerun()
