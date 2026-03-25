@@ -284,14 +284,15 @@ class TestMontarPromptComMetodologia:
         assert "semanas" in prompt.lower()
 
     def test_prompt_instrui_metodo_por_exercicio(self) -> None:
-        """Verifica que o prompt instrui incluir método de treino por exercício (ex: bi-set)."""
+        """Verifica que o prompt instrui incluir método de treino por exercício (ex: método)."""
         prompt = montar_prompt(
             query="Criar treino",
             resultados=[],
             metodologia="",
             contexto_aluno="",
         )
-        assert "bi-set" in prompt.lower()
+        # O novo formato usa "(método)" como placeholder no template de saída
+        assert "método" in prompt.lower()
 
     def test_prompt_instrui_minimo_fortalecimento_por_grupo(self) -> None:
         """Verifica que o prompt instrui mínimo de exercícios por grupo muscular."""
@@ -313,6 +314,27 @@ class TestMontarPromptComMetodologia:
             contexto_aluno="",
         )
         assert "4 semanas completas" in prompt.lower() and "pelo menos 4" in prompt.lower()
+
+    def test_prompt_instrui_respeitar_dias_por_semana(self) -> None:
+        """Verifica que o prompt instrui o LLM a respeitar o número de dias do aluno."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=[],
+            metodologia="",
+            contexto_aluno="",
+        )
+        assert "dias disponíveis por semana" in prompt.lower()
+
+    def test_prompt_instrui_formato_duas_linhas_exercicio(self) -> None:
+        """Verifica que o prompt instrui o formato de exercício em duas linhas (nome + séries)."""
+        prompt = montar_prompt(
+            query="Criar treino",
+            resultados=[],
+            metodologia="",
+            contexto_aluno="",
+        )
+        # O template deve conter o ícone de repetições para guiar o formato
+        assert "🔁" in prompt or "séries ×" in prompt.lower()
 
 
 # ---------------------------------------------------------------------------
