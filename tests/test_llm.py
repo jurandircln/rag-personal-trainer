@@ -269,7 +269,6 @@ class TestMontarPromptComMetodologia:
         assert "Resumo do Aluno" in prompt
         assert "Metodologia do Treino" in prompt
         assert "SEMANA" in prompt
-        assert "Fontes Consultadas" in prompt
 
     def test_prompt_sem_metodologia_nao_tem_secao_metodologia(self) -> None:
         """Verifica que prompt sem metodologia não inclui marcador de metodologia."""

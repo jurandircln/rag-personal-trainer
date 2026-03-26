@@ -250,8 +250,6 @@ elif st.session_state["estado"] == "resposta":
             else:
                 # Fallback: exibe texto completo sem abas
                 st.markdown(mensagem["content"])
-            if parsed["fontes"]:
-                st.markdown(parsed["fontes"])
             st.divider()
 
     # Recupera fontes da última resposta (antes de processar nova mensagem)
