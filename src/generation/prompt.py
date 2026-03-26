@@ -16,8 +16,7 @@ logger = logging.getLogger(__name__)
 _INSTRUCAO_BASE = (
     "Você é um assistente especializado em personal training.\n"
     "Use APENAS as referências abaixo para embasar cientificamente o treino.\n"
-    "NÃO inclua citações de fontes de forma inline no texto — todas as referências "
-    "devem aparecer apenas na seção '## Fontes Consultadas' ao final da resposta.\n"
+    "NÃO inclua citações de fontes nem referências bibliográficas na resposta.\n"
     "Gere SEMPRE um protocolo completo periodizado com múltiplas semanas adaptado ao "
     "contexto do aluno: iniciante → tipicamente 4 semanas; "
     "intermediário/avançado → tipicamente 5 semanas.\n"
@@ -134,8 +133,6 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 
 [mesma estrutura da SEMANA 1 — todos os dias completos]
 
-## Fontes Consultadas
-[lista numerada com as referências utilizadas: [N] Fonte, p. X — trecho relevante]
 """
 
 
