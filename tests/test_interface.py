@@ -293,3 +293,10 @@ class TestParsearSemanas:
         assert resultado["semanas"] == []
         assert "Fontes Consultadas" in resultado["cabecalho"]
         assert resultado["fontes"] == ""  # fontes só são extraídas quando dentro de uma semana
+
+
+def test_template_saida_nao_contem_opcional():
+    """Verifica que o template de saída não marca nenhuma seção como opcional."""
+    from src.generation.prompt import _TEMPLATE_SAIDA
+
+    assert "(Opcional)" not in _TEMPLATE_SAIDA
