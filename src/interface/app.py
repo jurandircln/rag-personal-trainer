@@ -32,17 +32,27 @@ def formatar_contexto_aluno(dados: dict) -> str:
         String formatada com as informações do aluno.
     """
     equipamentos = ", ".join(dados.get("Equipamentos disponíveis", [])) or "não informado"
-    return (
-        f"Nome: {dados['Nome']}\n"
-        f"Idade: {dados['Idade']} anos\n"
-        f"Modalidade/esporte: {dados['Modalidade / Esporte praticado']}\n"
-        f"Objetivo principal: {dados['Objetivo']}\n"
-        f"Dias disponíveis por semana: {dados['Dias disponíveis por semana']}\n"
-        f"Tempo por sessão: {dados['Tempo por sessão']}\n"
-        f"Equipamentos disponíveis: {equipamentos}\n"
-        f"Lesões ou restrições: {dados['Lesões ou restrições'] or 'nenhuma'}\n"
-        f"Nível de condicionamento: {dados['Nível de condicionamento']}\n"
-    )
+
+    # Filtra a opção "Deixar o agente decidir" para não enviá-la ao LLM
+    divisao_raw = dados.get("Divisão de treino", [])
+    divisao_opcoes = [d for d in divisao_raw if d != "Deixar o agente decidir"]
+
+    linhas = [
+        f"Nome: {dados['Nome']}",
+        f"Idade: {dados['Idade']} anos",
+        f"Modalidade/esporte: {dados['Modalidade / Esporte praticado']}",
+        f"Objetivo principal: {dados['Objetivo']}",
+        f"Dias disponíveis por semana: {dados['Dias disponíveis por semana']}",
+        f"Tempo por sessão: {dados['Tempo por sessão']}",
+        f"Equipamentos disponíveis: {equipamentos}",
+        f"Lesões ou restrições: {dados['Lesões ou restrições'] or 'nenhuma'}",
+        f"Nível de condicionamento: {dados['Nível de condicionamento']}",
+    ]
+
+    if divisao_opcoes:
+        linhas.append(f"Divisão de treino preferida: {', '.join(divisao_opcoes)}")
+
+    return "\n".join(linhas)
 
 
 def _parsear_semanas(texto: str) -> dict:
@@ -163,6 +173,12 @@ if st.session_state["estado"] == "anamnese":
                 ["Iniciante", "Intermediário", "Avançado"],
             )
 
+        divisao_treino = st.multiselect(
+            "Divisão de treino",
+            ["Deixar o agente decidir", "Fullbody", "Superior / Inferior", "Anterior / Posterior"],
+            default=["Deixar o agente decidir"],
+        )
+
         equipamentos = st.multiselect(
             "Equipamentos disponíveis",
             ["Peso Livre", "Máquinas", "Peso Corporal", "Elásticos", "Sem Equipamento"],
@@ -188,6 +204,7 @@ if st.session_state["estado"] == "anamnese":
                 "Equipamentos disponíveis": equipamentos,
                 "Lesões ou restrições": lesoes.strip(),
                 "Nível de condicionamento": nivel,
+                "Divisão de treino": divisao_treino,
             }
             st.session_state["contexto_aluno"] = formatar_contexto_aluno(dados)
             st.session_state["dados_aluno"] = dados
@@ -205,8 +222,12 @@ elif st.session_state["estado"] == "pergunta":
         st.text(st.session_state["contexto_aluno"])
 
     pergunta = st.text_area(
-        label="Sua pergunta:",
-        placeholder="Ex.: Monte um programa de força para 3 dias por semana.",
+        label="Adicione mais informações (opcional)",
+        placeholder=(
+            'Ex.: "Prefiro exercícios compostos no início. Evitar agachamento por limitação de tornozelo."\n'
+            '"Aluno ex-atleta de natação — priorizar mobilidade de ombro e volume de costas."\n'
+            '"Monte o treino com progressão de carga semana a semana."'
+        ),
         height=100,
     )
 

@@ -53,12 +53,12 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 
 ### Dia 1 — [foco do dia]
 
-### Liberação Miofascial (Opcional)
+### Liberação Miofascial
 
 * [nome do exercício]
   [duração, ex: 60s]
 
-### Mobilidade (Opcional)
+### Mobilidade
 
 * [nome do exercício]
   [N séries × N reps]
@@ -87,12 +87,12 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 
 ### Dia 2 — [foco do dia]
 
-### Liberação Miofascial (Opcional)
+### Liberação Miofascial
 
 * [nome do exercício]
   [duração]
 
-### Mobilidade (Opcional)
+### Mobilidade
 
 * [nome do exercício]
   [N séries × N reps]
