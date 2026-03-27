@@ -389,3 +389,26 @@ def test_formatar_contexto_aluno_sem_campo_divisao():
     contexto = formatar_contexto_aluno(dados)
 
     assert "Divisão de treino" not in contexto
+
+
+def test_formatar_contexto_aluno_divisao_mista_filtra_agente():
+    """Quando 'Deixar o agente decidir' aparece junto com outra opção, o sentinel é omitido."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Eva",
+        "Idade": 29,
+        "Modalidade / Esporte praticado": "musculação",
+        "Objetivo": "Hipertrofia",
+        "Dias disponíveis por semana": 4,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Livre"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        "Divisão de treino": ["Deixar o agente decidir", "Fullbody"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Divisão de treino preferida: Fullbody" in contexto
+    assert "Deixar o agente decidir" not in contexto
