@@ -228,21 +228,18 @@ elif st.session_state["estado"] == "pergunta":
             '"Aluno ex-atleta de natação — priorizar mobilidade de ombro e volume de costas."\n'
             '"Monte o treino com progressão de carga semana a semana."'
         ),
-        height=100,
+        height=150,
     )
 
     col1, col2 = st.columns([1, 4])
     with col1:
         if st.button("Enviar"):
-            if not pergunta.strip():
-                st.warning("Por favor, digite sua pergunta antes de enviar.")
-            else:
-                st.session_state["historico_conversa"] = [
-                    {"role": "user", "content": pergunta.strip()}
-                ]
-                st.session_state["rodadas_followup"] = 0
-                st.session_state["estado"] = "resposta"
-                st.rerun()
+            st.session_state["historico_conversa"] = [
+                {"role": "user", "content": pergunta.strip()}
+            ]
+            st.session_state["rodadas_followup"] = 0
+            st.session_state["estado"] = "resposta"
+            st.rerun()
     with col2:
         if st.button("← Alterar dados do aluno"):
             st.session_state["estado"] = "anamnese"
