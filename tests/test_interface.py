@@ -300,3 +300,92 @@ def test_template_saida_nao_contem_opcional():
     from src.generation.prompt import _TEMPLATE_SAIDA
 
     assert "(Opcional)" not in _TEMPLATE_SAIDA
+
+
+def test_formatar_contexto_aluno_com_divisao_treino():
+    """Quando divisão definida, o contexto inclui 'Divisão de treino preferida'."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Ana",
+        "Idade": 28,
+        "Modalidade / Esporte praticado": "musculação",
+        "Objetivo": "Hipertrofia",
+        "Dias disponíveis por semana": 4,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Livre"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        "Divisão de treino": ["Fullbody"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Divisão de treino preferida: Fullbody" in contexto
+
+
+def test_formatar_contexto_aluno_divisao_agente_decide():
+    """Quando 'Deixar o agente decidir' é a única seleção, campo é omitido do contexto."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Bruno",
+        "Idade": 35,
+        "Modalidade / Esporte praticado": "corrida",
+        "Objetivo": "Resistência",
+        "Dias disponíveis por semana": 3,
+        "Tempo por sessão": "45 min",
+        "Equipamentos disponíveis": ["Peso Corporal"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Iniciante",
+        "Divisão de treino": ["Deixar o agente decidir"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Divisão de treino" not in contexto
+
+
+def test_formatar_contexto_aluno_divisao_multipla():
+    """Quando múltiplas divisões selecionadas, todas aparecem no contexto."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Clara",
+        "Idade": 22,
+        "Modalidade / Esporte praticado": "natação",
+        "Objetivo": "Desempenho Esportivo",
+        "Dias disponíveis por semana": 5,
+        "Tempo por sessão": "90 min+",
+        "Equipamentos disponíveis": ["Peso Livre", "Máquinas"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Avançado",
+        "Divisão de treino": ["Superior / Inferior", "Anterior / Posterior"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Superior / Inferior" in contexto
+    assert "Anterior / Posterior" in contexto
+
+
+def test_formatar_contexto_aluno_sem_campo_divisao():
+    """Quando 'Divisão de treino' não está no dict (dados legados), campo é omitido."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Diego",
+        "Idade": 30,
+        "Modalidade / Esporte praticado": "crossfit",
+        "Objetivo": "Emagrecimento",
+        "Dias disponíveis por semana": 4,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Corporal"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        # sem chave "Divisão de treino"
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Divisão de treino" not in contexto
