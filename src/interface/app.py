@@ -222,8 +222,12 @@ elif st.session_state["estado"] == "pergunta":
         st.text(st.session_state["contexto_aluno"])
 
     pergunta = st.text_area(
-        label="Sua pergunta:",
-        placeholder="Ex.: Monte um programa de força para 3 dias por semana.",
+        label="Adicione mais informações (opcional)",
+        placeholder=(
+            'Ex.: "Prefiro exercícios compostos no início. Evitar agachamento por limitação de tornozelo."\n'
+            '"Aluno ex-atleta de natação — priorizar mobilidade de ombro e volume de costas."\n'
+            '"Monte o treino com progressão de carga semana a semana."'
+        ),
         height=100,
     )
 
