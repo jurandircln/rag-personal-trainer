@@ -477,8 +477,7 @@ def test_formatar_contexto_aluno_divisao_superior_inferior_combinados():
 
     contexto = formatar_contexto_aluno(dados)
 
-    assert "Superior" in contexto
-    assert "Inferior" in contexto
+    assert "Divisão de treino preferida: Superior, Inferior" in contexto
 
 
 def test_formatar_contexto_aluno_divisao_quatro_partes():
@@ -531,3 +530,25 @@ def test_formatar_contexto_aluno_divisao_corpo_todo_anterior():
     contexto = formatar_contexto_aluno(dados)
 
     assert "Superior Anterior / Inferior Anterior (Corpo todo)" in contexto
+
+
+def test_formatar_contexto_aluno_divisao_corpo_todo_posterior():
+    """Opção composta 'Superior Posterior / Inferior Posterior (Corpo todo)' é enviada corretamente."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Karen",
+        "Idade": 31,
+        "Modalidade / Esporte praticado": "natação",
+        "Objetivo": "Desempenho Esportivo",
+        "Dias disponíveis por semana": 3,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Corporal"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        "Divisão de treino": ["Superior Posterior / Inferior Posterior (Corpo todo)"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Superior Posterior / Inferior Posterior (Corpo todo)" in contexto
