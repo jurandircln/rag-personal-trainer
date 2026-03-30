@@ -1,6 +1,4 @@
 """Testes da função montar_prompt e das constantes do módulo de prompt."""
-import pytest
-
 from src.config.types import ResultadoBusca, Chunk
 
 
