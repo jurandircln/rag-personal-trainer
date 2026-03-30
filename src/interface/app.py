@@ -175,7 +175,18 @@ if st.session_state["estado"] == "anamnese":
 
         divisao_treino = st.multiselect(
             "Divisão de treino",
-            ["Deixar o agente decidir", "Fullbody", "Superior / Inferior", "Anterior / Posterior"],
+            [
+                "Deixar o agente decidir",
+                "Full Body (Corpo todo)",
+                "Superior",
+                "Inferior",
+                "Superior Anterior / Inferior Anterior (Corpo todo)",
+                "Superior Posterior / Inferior Posterior (Corpo todo)",
+                "Superior Anterior",
+                "Superior Posterior",
+                "Inferior Anterior",
+                "Inferior Posterior",
+            ],
             default=["Deixar o agente decidir"],
         )
 
