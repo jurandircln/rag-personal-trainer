@@ -412,3 +412,122 @@ def test_formatar_contexto_aluno_divisao_mista_filtra_agente():
 
     assert "Divisão de treino preferida: Full Body (Corpo todo)" in contexto
     assert "Deixar o agente decidir" not in contexto
+
+
+def test_formatar_contexto_aluno_divisao_superior():
+    """Opção 'Superior' isolada é enviada corretamente ao LLM."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Fábio",
+        "Idade": 32,
+        "Modalidade / Esporte praticado": "musculação",
+        "Objetivo": "Hipertrofia",
+        "Dias disponíveis por semana": 4,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Livre"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        "Divisão de treino": ["Superior"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Divisão de treino preferida: Superior" in contexto
+
+
+def test_formatar_contexto_aluno_divisao_inferior():
+    """Opção 'Inferior' isolada é enviada corretamente ao LLM."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Gabi",
+        "Idade": 25,
+        "Modalidade / Esporte praticado": "musculação",
+        "Objetivo": "Hipertrofia",
+        "Dias disponíveis por semana": 4,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Livre"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        "Divisão de treino": ["Inferior"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Divisão de treino preferida: Inferior" in contexto
+
+
+def test_formatar_contexto_aluno_divisao_superior_inferior_combinados():
+    """Combinação 'Superior' + 'Inferior' aparece completa no contexto."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Hugo",
+        "Idade": 27,
+        "Modalidade / Esporte praticado": "musculação",
+        "Objetivo": "Hipertrofia",
+        "Dias disponíveis por semana": 4,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Livre"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        "Divisão de treino": ["Superior", "Inferior"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Superior" in contexto
+    assert "Inferior" in contexto
+
+
+def test_formatar_contexto_aluno_divisao_quatro_partes():
+    """Divisão completa em 4 partes aparece íntegra no contexto."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Irene",
+        "Idade": 34,
+        "Modalidade / Esporte praticado": "musculação",
+        "Objetivo": "Hipertrofia",
+        "Dias disponíveis por semana": 5,
+        "Tempo por sessão": "90 min+",
+        "Equipamentos disponíveis": ["Peso Livre", "Máquinas"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Avançado",
+        "Divisão de treino": [
+            "Superior Anterior",
+            "Superior Posterior",
+            "Inferior Anterior",
+            "Inferior Posterior",
+        ],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Superior Anterior" in contexto
+    assert "Superior Posterior" in contexto
+    assert "Inferior Anterior" in contexto
+    assert "Inferior Posterior" in contexto
+
+
+def test_formatar_contexto_aluno_divisao_corpo_todo_anterior():
+    """Opção composta 'Superior Anterior / Inferior Anterior (Corpo todo)' é enviada corretamente."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Jonas",
+        "Idade": 29,
+        "Modalidade / Esporte praticado": "atletismo",
+        "Objetivo": "Desempenho Esportivo",
+        "Dias disponíveis por semana": 3,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Corporal"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        "Divisão de treino": ["Superior Anterior / Inferior Anterior (Corpo todo)"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Superior Anterior / Inferior Anterior (Corpo todo)" in contexto
