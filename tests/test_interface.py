@@ -316,12 +316,12 @@ def test_formatar_contexto_aluno_com_divisao_treino():
         "Equipamentos disponíveis": ["Peso Livre"],
         "Lesões ou restrições": "",
         "Nível de condicionamento": "Intermediário",
-        "Divisão de treino": ["Fullbody"],
+        "Divisão de treino": ["Full Body (Corpo todo)"],
     }
 
     contexto = formatar_contexto_aluno(dados)
 
-    assert "Divisão de treino preferida: Fullbody" in contexto
+    assert "Divisão de treino preferida: Full Body (Corpo todo)" in contexto
 
 
 def test_formatar_contexto_aluno_divisao_agente_decide():
@@ -360,13 +360,13 @@ def test_formatar_contexto_aluno_divisao_multipla():
         "Equipamentos disponíveis": ["Peso Livre", "Máquinas"],
         "Lesões ou restrições": "",
         "Nível de condicionamento": "Avançado",
-        "Divisão de treino": ["Superior / Inferior", "Anterior / Posterior"],
+        "Divisão de treino": ["Superior Anterior", "Inferior Posterior"],
     }
 
     contexto = formatar_contexto_aluno(dados)
 
-    assert "Superior / Inferior" in contexto
-    assert "Anterior / Posterior" in contexto
+    assert "Superior Anterior" in contexto
+    assert "Inferior Posterior" in contexto
 
 
 def test_formatar_contexto_aluno_sem_campo_divisao():
@@ -405,10 +405,10 @@ def test_formatar_contexto_aluno_divisao_mista_filtra_agente():
         "Equipamentos disponíveis": ["Peso Livre"],
         "Lesões ou restrições": "",
         "Nível de condicionamento": "Intermediário",
-        "Divisão de treino": ["Deixar o agente decidir", "Fullbody"],
+        "Divisão de treino": ["Deixar o agente decidir", "Full Body (Corpo todo)"],
     }
 
     contexto = formatar_contexto_aluno(dados)
 
-    assert "Divisão de treino preferida: Fullbody" in contexto
+    assert "Divisão de treino preferida: Full Body (Corpo todo)" in contexto
     assert "Deixar o agente decidir" not in contexto
