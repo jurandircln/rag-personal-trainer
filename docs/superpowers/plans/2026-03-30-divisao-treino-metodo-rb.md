@@ -140,15 +140,20 @@ _DIVISAO_TREINO_RB = (
     "alunos com pouco tempo disponível.\n"
     "- Superior + Inferior → indicado para: intermediários, 3–4x/semana. "
     "Vantagem: melhor controle de volume e maior recuperação por grupamento.\n"
-    "- Superior Anterior/Inferior Anterior ou Superior Posterior/Inferior Posterior (Corpo todo) → "
-    "indicado para: intermediários e atletas. Respeita cadeias musculares e melhora equilíbrio.\n"
+    "- Cadeia Anterior (Corpo todo): numa sessão, treinar a cadeia anterior completa — "
+    "Superior Anterior (Peito, Tríceps, Ombros) + Inferior Anterior (Quadríceps). "
+    "Indicado para intermediários e atletas. Respeita cadeias musculares.\n"
+    "- Cadeia Posterior (Corpo todo): numa sessão, treinar a cadeia posterior completa — "
+    "Superior Posterior (Dorsal, Bíceps) + Inferior Posterior (Post. Coxa, Panturrilha). "
+    "Indicado para intermediários e atletas. Respeita cadeias musculares.\n"
     "- Divisão completa em 4 partes (Superior Anterior, Superior Posterior, Inferior Anterior, "
     "Inferior Posterior) → indicado para: avançados, foco em hipertrofia, ≥4x/semana. "
     "Maior especificidade e volume por grupamento.\n\n"
     "REGRAS OBRIGATÓRIAS — aplicam-se a qualquer divisão:\n"
     "- Todo treino deve conter exercícios de core: anti-extensão, anti-rotação, "
     "anti-flexão lateral e estabilidade dinâmica.\n"
-    "- Mínimo de 12 exercícios por sessão (ideal: 12–15; máximo: 18–20).\n"
+    "- Mínimo de 12 exercícios na seção Fortalecimento por sessão (ideal: 12–15). "
+    "Liberação, mobilidade e ativação são PREPARAÇÃO — NÃO contam para esse mínimo.\n"
     "- Estrutura obrigatória da sessão: Liberação Miofascial → Mobilidade → Ativação → Fortalecimento.\n"
     "- Em treinos de membros inferiores: incluir core. "
     "Em treinos de membros superiores: incluir estabilidade escapular.\n\n"
@@ -223,8 +228,8 @@ Substituir por:
                 "Full Body (Corpo todo)",
                 "Superior",
                 "Inferior",
-                "Superior Anterior / Inferior Anterior (Corpo todo)",
-                "Superior Posterior / Inferior Posterior (Corpo todo)",
+                "Cadeia Anterior (Corpo todo) · Peito + Tríceps + Ombros + Quadríceps",
+                "Cadeia Posterior (Corpo todo) · Dorsal + Bíceps + Post. Coxa + Panturrilha",
                 "Superior Anterior",
                 "Superior Posterior",
                 "Inferior Anterior",
@@ -459,7 +464,7 @@ def test_formatar_contexto_aluno_divisao_quatro_partes():
 
 
 def test_formatar_contexto_aluno_divisao_corpo_todo_anterior():
-    """Opção composta 'Superior Anterior / Inferior Anterior (Corpo todo)' é enviada corretamente."""
+    """Opção composta 'Cadeia Anterior (Corpo todo)' é enviada corretamente."""
     from src.interface.app import formatar_contexto_aluno
 
     dados = {
@@ -472,12 +477,12 @@ def test_formatar_contexto_aluno_divisao_corpo_todo_anterior():
         "Equipamentos disponíveis": ["Peso Corporal"],
         "Lesões ou restrições": "",
         "Nível de condicionamento": "Intermediário",
-        "Divisão de treino": ["Superior Anterior / Inferior Anterior (Corpo todo)"],
+        "Divisão de treino": ["Cadeia Anterior (Corpo todo) · Peito + Tríceps + Ombros + Quadríceps"],
     }
 
     contexto = formatar_contexto_aluno(dados)
 
-    assert "Superior Anterior / Inferior Anterior (Corpo todo)" in contexto
+    assert "Cadeia Anterior (Corpo todo) · Peito + Tríceps + Ombros + Quadríceps" in contexto
 ```
 
 - [ ] **Passo 4.2 — Rodar os novos testes**
