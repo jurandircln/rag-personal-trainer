@@ -44,3 +44,28 @@ def test_catalogo_block_reforça_preparacao_nao_conta():
 
     assert "NÃO contam" in prompt
     assert "Fortalecimento" in prompt
+
+
+def test_template_contem_aviso_minimo_fortalecimento():
+    """_TEMPLATE_SAIDA deve conter aviso de mínimo obrigatório em cada Fortalecimento."""
+    from src.generation.prompt import _TEMPLATE_SAIDA
+
+    assert "MÍNIMO OBRIGATÓRIO: 12 exercícios nesta seção" in _TEMPLATE_SAIDA
+
+
+def test_template_fortalecimento_tem_14_exercicios_por_secao():
+    """Cada bloco ### Fortalecimento do template deve exibir ao menos 14 exercícios de exemplo."""
+    import re
+    from src.generation.prompt import _TEMPLATE_SAIDA
+
+    # Divide o template nos blocos de Fortalecimento (pula o texto antes do primeiro)
+    blocos = re.split(r"\n### Fortalecimento\n", _TEMPLATE_SAIDA)[1:]
+    assert blocos, "Nenhum bloco ### Fortalecimento encontrado no template"
+
+    for bloco in blocos:
+        # Pega o conteúdo até o próximo header de nível ### (ex: ### Observações)
+        conteudo = re.split(r"\n### ", bloco)[0]
+        contagem = conteudo.count("* [nome do exercício]")
+        assert contagem >= 14, (
+            f"Bloco Fortalecimento tem {contagem} exercício(s) de exemplo — esperado >= 14"
+        )
