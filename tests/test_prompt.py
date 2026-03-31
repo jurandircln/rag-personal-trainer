@@ -14,11 +14,10 @@ def _resultado(conteudo: str = "referência de teste") -> ResultadoBusca:
 
 
 def test_instrucao_base_minimo_fortalecimento_explicito():
-    """_INSTRUCAO_BASE deve dizer que o mínimo de 12 é para a seção Fortalecimento."""
+    """_INSTRUCAO_BASE deve associar o mínimo de 12 exercícios à seção Fortalecimento."""
     from src.generation.prompt import _INSTRUCAO_BASE
 
-    assert "FORTALECIMENTO" in _INSTRUCAO_BASE
-    assert "12" in _INSTRUCAO_BASE
+    assert "Quantidade mínima de exercícios na seção FORTALECIMENTO: 12" in _INSTRUCAO_BASE
 
 
 def test_instrucao_base_preparacao_nao_conta():
@@ -29,7 +28,12 @@ def test_instrucao_base_preparacao_nao_conta():
 
 
 def test_catalogo_block_reforça_preparacao_nao_conta():
-    """Bloco do catálogo em montar_prompt() deve reforçar que preparação não conta."""
+    """Bloco do catálogo em montar_prompt() deve reforçar que preparação não conta.
+
+    Nota: test_llm.py também verifica esta propriedade via test_prompt_com_catalogo_contem_instrucao_volume.
+    A cobertura dupla é intencional: este arquivo testa a unidade prompt.py isolada;
+    test_llm.py testa o fluxo integrado.
+    """
     from src.generation.prompt import montar_prompt
 
     prompt = montar_prompt(
