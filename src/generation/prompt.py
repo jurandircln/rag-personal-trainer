@@ -37,6 +37,34 @@ _INSTRUCAO_BASE = (
     "segunda linha (indentada com 2 espaços): N séries × N–N reps OU duração em segundos. "
     "Exemplo: - Supino reto com barra\\n  4 séries × 6–8 reps\n"
     "A seção '## Resumo do Aluno' deve ser um parágrafo contínuo, NÃO bullet points.\n"
+    "A escolha e justificativa da divisão muscular seguem obrigatoriamente os critérios "
+    "do bloco [DIVISÃO DE TREINO — MÉTODO RB] presente neste prompt.\n"
+)
+
+# Critérios do Método RB para divisão de treino — injetado em todo prompt
+_DIVISAO_TREINO_RB = (
+    "[DIVISÃO DE TREINO — MÉTODO RB]\n"
+    "Quando o aluno selecionar 'Deixar o agente decidir', aplique os critérios abaixo "
+    "para escolher a divisão mais adequada ao perfil do aluno:\n\n"
+    "- Full Body (Corpo todo) → indicado para: iniciantes, 2–3x/semana, reabilitação, "
+    "alunos com pouco tempo disponível.\n"
+    "- Superior + Inferior → indicado para: intermediários, 3–4x/semana. "
+    "Vantagem: melhor controle de volume e maior recuperação por grupamento.\n"
+    "- Superior Anterior/Inferior Anterior ou Superior Posterior/Inferior Posterior (Corpo todo) → "
+    "indicado para: intermediários e atletas. Respeita cadeias musculares e melhora equilíbrio.\n"
+    "- Divisão completa em 4 partes (Superior Anterior, Superior Posterior, Inferior Anterior, "
+    "Inferior Posterior) → indicado para: avançados, foco em hipertrofia, ≥4x/semana. "
+    "Maior especificidade e volume por grupamento.\n\n"
+    "REGRAS OBRIGATÓRIAS — aplicam-se a qualquer divisão:\n"
+    "- Todo treino deve conter exercícios de core: anti-extensão, anti-rotação, "
+    "anti-flexão lateral e estabilidade dinâmica.\n"
+    "- Mínimo de 12 exercícios por sessão (ideal: 12–15; máximo: 18–20).\n"
+    "- Estrutura obrigatória da sessão: Liberação Miofascial → Mobilidade → Ativação → Fortalecimento.\n"
+    "- Em treinos de membros inferiores: incluir core. "
+    "Em treinos de membros superiores: incluir estabilidade escapular.\n\n"
+    "JUSTIFICATIVA OBRIGATÓRIA: na seção '## Metodologia do Treino', explique sempre "
+    "qual divisão foi escolhida ou seguida e por quê, com base nos dados do aluno "
+    "(frequência semanal, nível de condicionamento e objetivo principal).\n"
 )
 
 # Template de saída unificado — os marcadores ## SEMANA N são parseados pela interface
@@ -167,6 +195,9 @@ def montar_prompt(
 
     # Instrução base do sistema
     secoes.append(_INSTRUCAO_BASE)
+
+    # Critérios de divisão de treino do Método RB
+    secoes.append(_DIVISAO_TREINO_RB)
 
     # Metodologia RB (quando disponível)
     if metodologia.strip():
