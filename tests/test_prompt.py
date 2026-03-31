@@ -44,6 +44,7 @@ def test_catalogo_block_reforça_preparacao_nao_conta():
 
     assert "Liberação NÃO conta" in prompt
     assert "Fortalecimento" in prompt
+    assert "Mobilidade + Ativação + Fortalecimento ≥ 12" in prompt
 
 
 def test_template_contem_aviso_minimo_fortalecimento():

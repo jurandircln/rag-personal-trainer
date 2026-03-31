@@ -256,7 +256,7 @@ def montar_prompt(
             "- Exercícios marcados [SUBSTITUTO OBRIGATÓRIO] substituem obrigatoriamente o exercício "
             "original. Nunca sugira o exercício original quando houver substituto marcado.\n"
             "- Fortalecimento: mínimo 8 exercícios por sessão. "
-            "Mobilidade e ativação contam para o total mínimo: Mobilidade + Ativação + Fortalecimento ≥ 12. "
+            "Mobilidade e ativação CONTAM para o total mínimo: Mobilidade + Ativação + Fortalecimento ≥ 12. "
             "Liberação NÃO conta para nenhum mínimo. "
             "Use a coluna 'Tempo por rep. (s)' para dimensionar o tempo total de cada exercício.\n"
             f"{catalogo_filtrado}\n"
