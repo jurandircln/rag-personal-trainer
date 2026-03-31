@@ -1,8 +1,8 @@
-"""Testes da função montar_prompt e das constantes do módulo de prompt."""
+"""Testes das constantes e da função montar_prompt."""
 from src.config.types import ResultadoBusca, Chunk
 
 
-def _chunk(conteudo: str = "texto de referência") -> ResultadoBusca:
+def _resultado(conteudo: str = "referência de teste") -> ResultadoBusca:
     """Cria um ResultadoBusca mínimo para uso nos testes."""
     chunk = Chunk(
         chunk_id="c1",
@@ -13,55 +13,34 @@ def _chunk(conteudo: str = "texto de referência") -> ResultadoBusca:
     return ResultadoBusca(chunk=chunk, score=0.9)
 
 
-def test_divisao_treino_rb_presente_no_prompt():
-    """_DIVISAO_TREINO_RB deve aparecer em todo prompt gerado por montar_prompt."""
-    from src.generation.prompt import montar_prompt
-
-    prompt = montar_prompt(
-        query="Gere um treino",
-        resultados=[_chunk()],
-        contexto_aluno="Nome: Ana",
-    )
-
-    assert "[DIVISÃO DE TREINO — MÉTODO RB]" in prompt
-
-
-def test_divisao_treino_rb_antes_da_metodologia():
-    """Bloco de divisão deve aparecer antes do bloco de metodologia no prompt."""
-    from src.generation.prompt import montar_prompt
-
-    prompt = montar_prompt(
-        query="Gere um treino",
-        resultados=[_chunk()],
-        metodologia="Metodologia RB completa",
-        contexto_aluno="Nome: Ana",
-    )
-
-    pos_divisao = prompt.index("[DIVISÃO DE TREINO — MÉTODO RB]")
-    pos_metodologia = prompt.index("[METODOLOGIA")
-
-    assert pos_divisao < pos_metodologia
-
-
-def test_instrucao_base_referencia_divisao():
-    """_INSTRUCAO_BASE deve conter referência ao bloco de divisão de treino."""
+def test_instrucao_base_minimo_fortalecimento_explicito():
+    """_INSTRUCAO_BASE deve associar o mínimo de 12 exercícios à seção Fortalecimento."""
     from src.generation.prompt import _INSTRUCAO_BASE
 
-    assert "DIVISÃO DE TREINO" in _INSTRUCAO_BASE
+    assert "Quantidade mínima de exercícios na seção FORTALECIMENTO: 12" in _INSTRUCAO_BASE
 
 
-def test_divisao_treino_rb_contem_criterios_full_body():
-    """_DIVISAO_TREINO_RB deve conter critérios para Full Body."""
-    from src.generation.prompt import _DIVISAO_TREINO_RB
+def test_instrucao_base_preparacao_nao_conta():
+    """_INSTRUCAO_BASE deve informar que liberação, mobilidade e ativação NÃO contam."""
+    from src.generation.prompt import _INSTRUCAO_BASE
 
-    assert "Full Body" in _DIVISAO_TREINO_RB
-    assert "iniciantes" in _DIVISAO_TREINO_RB
+    assert "NÃO contam" in _INSTRUCAO_BASE
 
 
-def test_divisao_treino_rb_contem_regras_obrigatorias():
-    """_DIVISAO_TREINO_RB deve conter as regras obrigatórias do método."""
-    from src.generation.prompt import _DIVISAO_TREINO_RB
+def test_catalogo_block_reforça_preparacao_nao_conta():
+    """Bloco do catálogo em montar_prompt() deve reforçar que preparação não conta.
 
-    assert "core" in _DIVISAO_TREINO_RB
-    assert "12" in _DIVISAO_TREINO_RB
-    assert "Metodologia do Treino" in _DIVISAO_TREINO_RB
+    Nota: test_llm.py também verifica esta propriedade via test_prompt_com_catalogo_contem_instrucao_volume.
+    A cobertura dupla é intencional: este arquivo testa a unidade prompt.py isolada;
+    test_llm.py testa o fluxo integrado.
+    """
+    from src.generation.prompt import montar_prompt
+
+    prompt = montar_prompt(
+        query="Gere treino",
+        resultados=[_resultado()],
+        catalogo_filtrado="| Exercício | Categoria |\n| Agachamento | Inferior |",
+    )
+
+    assert "NÃO contam" in prompt
+    assert "Fortalecimento" in prompt
