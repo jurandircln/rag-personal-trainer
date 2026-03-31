@@ -14,21 +14,21 @@ def _resultado(conteudo: str = "referência de teste") -> ResultadoBusca:
 
 
 def test_instrucao_base_minimo_fortalecimento_explicito():
-    """_INSTRUCAO_BASE deve associar o mínimo de 12 exercícios à seção Fortalecimento."""
+    """_INSTRUCAO_BASE deve associar o mínimo de 8 exercícios à seção Fortalecimento."""
     from src.generation.prompt import _INSTRUCAO_BASE
 
-    assert "Quantidade mínima de exercícios na seção FORTALECIMENTO: 12" in _INSTRUCAO_BASE
+    assert "Fortalecimento: mínimo 8 exercícios por sessão" in _INSTRUCAO_BASE
 
 
 def test_instrucao_base_preparacao_nao_conta():
-    """_INSTRUCAO_BASE deve informar que liberação, mobilidade e ativação NÃO contam."""
+    """_INSTRUCAO_BASE deve informar que liberação miofascial NÃO conta para nenhum mínimo."""
     from src.generation.prompt import _INSTRUCAO_BASE
 
-    assert "NÃO contam" in _INSTRUCAO_BASE
+    assert "Liberação miofascial NÃO conta" in _INSTRUCAO_BASE
 
 
 def test_catalogo_block_reforça_preparacao_nao_conta():
-    """Bloco do catálogo em montar_prompt() deve reforçar que preparação não conta.
+    """Bloco do catálogo em montar_prompt() deve reforçar que liberação não conta.
 
     Nota: test_llm.py também verifica esta propriedade via test_prompt_com_catalogo_contem_instrucao_volume.
     A cobertura dupla é intencional: este arquivo testa a unidade prompt.py isolada;
@@ -42,15 +42,30 @@ def test_catalogo_block_reforça_preparacao_nao_conta():
         catalogo_filtrado="| Exercício | Categoria |\n| Agachamento | Inferior |",
     )
 
-    assert "NÃO contam" in prompt
+    assert "Liberação NÃO conta" in prompt
     assert "Fortalecimento" in prompt
+    assert "Mobilidade + Ativação + Fortalecimento ≥ 12" in prompt
 
 
 def test_template_contem_aviso_minimo_fortalecimento():
-    """_TEMPLATE_SAIDA deve conter aviso de mínimo obrigatório em cada Fortalecimento."""
+    """_TEMPLATE_SAIDA deve conter aviso de mínimo de fortalecimento em cada bloco."""
     from src.generation.prompt import _TEMPLATE_SAIDA
 
-    assert _TEMPLATE_SAIDA.count("MÍNIMO OBRIGATÓRIO: 12 exercícios nesta seção") == 2
+    assert _TEMPLATE_SAIDA.count("Fortalecimento: mínimo 8 exercícios nesta seção") == 2
+
+
+def test_instrucao_base_total_minimo_12():
+    """_INSTRUCAO_BASE deve exigir Mobilidade + Ativação + Fortalecimento >= 12."""
+    from src.generation.prompt import _INSTRUCAO_BASE
+
+    assert "Mobilidade + Ativação + Fortalecimento ≥ 12" in _INSTRUCAO_BASE
+
+
+def test_template_contem_nota_total_minimo_12():
+    """_TEMPLATE_SAIDA deve conter nota de total mínimo 12 em cada bloco Fortalecimento."""
+    from src.generation.prompt import _TEMPLATE_SAIDA
+
+    assert _TEMPLATE_SAIDA.count("Total (Mobilidade + Ativação + Fortalecimento): mínimo 12") == 2
 
 
 def test_template_fortalecimento_tem_14_exercicios_por_secao():
