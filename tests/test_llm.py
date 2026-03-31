@@ -378,7 +378,7 @@ class TestMontarPromptComCatalogo:
         assert "Prancha" in prompt
 
     def test_prompt_com_catalogo_contem_instrucao_volume(self, resultados_exemplo) -> None:
-        """Template com catálogo contém instrução de mínimo 12 exercícios de Fortalecimento."""
+        """Template com catálogo contém instrução de mínimo 8 fortalecimento e total >= 12."""
         catalogo_md = "## Core\n\n| Prancha | ... | Peso Corporal |"
         prompt = montar_prompt(
             query="Criar treino",
@@ -387,8 +387,8 @@ class TestMontarPromptComCatalogo:
             contexto_aluno="",
             catalogo_filtrado=catalogo_md,
         )
-        assert "12" in prompt
-        assert "NÃO contam" in prompt
+        assert "Fortalecimento: mínimo 8" in prompt
+        assert "Mobilidade + Ativação + Fortalecimento ≥ 12" in prompt
 
     def test_prompt_sem_catalogo_nao_tem_justificativa(self, resultados_exemplo) -> None:
         """Template NÃO inclui Justificativa Personalizada quando catálogo ausente."""

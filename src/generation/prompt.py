@@ -23,9 +23,10 @@ _INSTRUCAO_BASE = (
     "SEMPRE gere pelo menos 4 semanas completas — nunca abrevie ou use reticências (...).\n"
     "O número de DIAS por semana DEVE ser exatamente igual ao campo 'Dias disponíveis por semana' "
     "informado no contexto do aluno. Ex.: se o aluno tem 4 dias → gere exatamente 4 dias em cada semana.\n"
-    "Quantidade mínima de exercícios na seção FORTALECIMENTO: 12 por sessão (ideal: 12–15). "
-    "Liberação miofascial, mobilidade e ativação são fases de PREPARAÇÃO — "
-    "NÃO contam para esse mínimo. "
+    "Seção Fortalecimento: mínimo 8 exercícios por sessão. "
+    "Mobilidade e ativação CONTAM para o total mínimo da sessão: "
+    "Mobilidade + Ativação + Fortalecimento ≥ 12 por sessão. "
+    "Liberação miofascial NÃO conta para nenhum mínimo. "
     "Dentro do Fortalecimento: músculos pequenos (bíceps, tríceps, ombros, panturrilha) "
     "→ mínimo 3 exercícios cada; "
     "músculos grandes (peitoral, costas, quadríceps, posteriores de coxa, glúteo, core) "
@@ -72,7 +73,8 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
   [N séries × N reps]
 
 ### Fortalecimento
-[MÍNIMO OBRIGATÓRIO: 12 exercícios nesta seção — Liberação, Mobilidade e Ativação NÃO contam. Adicione mais grupos musculares se necessário antes de fechar este dia.]
+[Fortalecimento: mínimo 8 exercícios nesta seção]
+[Total (Mobilidade + Ativação + Fortalecimento): mínimo 12 — Liberação NÃO conta]
 
 #### [Músculo Grande, ex: Peitoral]
 
@@ -137,7 +139,8 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
   [N séries × N reps]
 
 ### Fortalecimento
-[MÍNIMO OBRIGATÓRIO: 12 exercícios nesta seção — Liberação, Mobilidade e Ativação NÃO contam. Adicione mais grupos musculares se necessário antes de fechar este dia.]
+[Fortalecimento: mínimo 8 exercícios nesta seção]
+[Total (Mobilidade + Ativação + Fortalecimento): mínimo 12 — Liberação NÃO conta]
 
 #### [Músculo Grande]
 
@@ -252,8 +255,9 @@ def montar_prompt(
             "- Exercícios marcados [PRIORIZAR] devem ser a primeira escolha para o nível do aluno.\n"
             "- Exercícios marcados [SUBSTITUTO OBRIGATÓRIO] substituem obrigatoriamente o exercício "
             "original. Nunca sugira o exercício original quando houver substituto marcado.\n"
-            "- Seção Fortalecimento: mínimo 12 exercícios por sessão (ideal: 12–15). "
-            "Liberação, mobilidade e ativação são PREPARAÇÃO e NÃO contam para esse mínimo. "
+            "- Fortalecimento: mínimo 8 exercícios por sessão. "
+            "Mobilidade e ativação contam para o total mínimo: Mobilidade + Ativação + Fortalecimento ≥ 12. "
+            "Liberação NÃO conta para nenhum mínimo. "
             "Use a coluna 'Tempo por rep. (s)' para dimensionar o tempo total de cada exercício.\n"
             f"{catalogo_filtrado}\n"
         )
