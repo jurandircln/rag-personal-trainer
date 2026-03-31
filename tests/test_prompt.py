@@ -50,7 +50,7 @@ def test_template_contem_aviso_minimo_fortalecimento():
     """_TEMPLATE_SAIDA deve conter aviso de mínimo obrigatório em cada Fortalecimento."""
     from src.generation.prompt import _TEMPLATE_SAIDA
 
-    assert "MÍNIMO OBRIGATÓRIO: 12 exercícios nesta seção" in _TEMPLATE_SAIDA
+    assert _TEMPLATE_SAIDA.count("MÍNIMO OBRIGATÓRIO: 12 exercícios nesta seção") == 2
 
 
 def test_template_fortalecimento_tem_14_exercicios_por_secao():
