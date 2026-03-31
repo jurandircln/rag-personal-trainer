@@ -100,14 +100,45 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
   [N séries × N reps]
 
 ### Fortalecimento
+[MÍNIMO OBRIGATÓRIO: 12 exercícios nesta seção — Liberação, Mobilidade e Ativação NÃO contam. Adicione mais grupos musculares se necessário antes de fechar este dia.]
 
 #### [Músculo Grande, ex: Peitoral]
 
 * [nome do exercício]
   [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+
+#### [Músculo Grande, ex: Dorsal]
+
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
 
 #### [Músculo Pequeno, ex: Tríceps]
 
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+
+#### [Músculo Pequeno, ex: Bíceps]
+
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
 * [nome do exercício]
   [N séries × N–N reps (método)]
 
@@ -134,14 +165,45 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
   [N séries × N reps]
 
 ### Fortalecimento
+[MÍNIMO OBRIGATÓRIO: 12 exercícios nesta seção — Liberação, Mobilidade e Ativação NÃO contam. Adicione mais grupos musculares se necessário antes de fechar este dia.]
 
 #### [Músculo Grande]
 
 * [nome do exercício]
   [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+
+#### [Músculo Grande]
+
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
 
 #### [Músculo Pequeno]
 
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+
+#### [Músculo Pequeno]
+
+* [nome do exercício]
+  [N séries × N–N reps (método)]
+* [nome do exercício]
+  [N séries × N–N reps (método)]
 * [nome do exercício]
   [N séries × N–N reps (método)]
 
