@@ -99,7 +99,7 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 
 ### Dia 1 — [foco do dia]
 
-### Aquecimento  *(usar somente quando solicitado e equipamento cardiovascular disponível)*
+### Aquecimento  [usar somente quando solicitado e equipamento cardiovascular disponível]
 
 * [modalidade, ex: Esteira]
   [duração e intensidade, ex: 10 min — velocidade 6 km/h, intensidade leve]
@@ -176,7 +176,7 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 
 ### Dia 2 — [foco do dia]
 
-### Aquecimento  *(usar somente quando solicitado e equipamento cardiovascular disponível)*
+### Aquecimento  [usar somente quando solicitado e equipamento cardiovascular disponível]
 
 * [modalidade, ex: Esteira]
   [duração e intensidade, ex: 10 min — velocidade 6 km/h, intensidade leve]

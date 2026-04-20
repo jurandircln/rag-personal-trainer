@@ -103,18 +103,22 @@ def test_template_saida_contem_exemplo_conjugado():
 
 
 def test_instrucao_base_contem_regra_aquecimento():
-    """_INSTRUCAO_BASE deve conter a instrução condicional de ### Aquecimento."""
+    """_INSTRUCAO_BASE deve conter a instrução condicional de aquecimento com condição dupla."""
     from src.generation.prompt import _INSTRUCAO_BASE
 
-    assert "### Aquecimento" in _INSTRUCAO_BASE
-    assert "equipamentos cardiovasculares" in _INSTRUCAO_BASE
+    assert "Se o personal solicitar aquecimento e o contexto do aluno listar equipamentos" in _INSTRUCAO_BASE
+    assert "omita completamente a seção" in _INSTRUCAO_BASE
 
 
 def test_template_saida_contem_secao_aquecimento():
-    """_TEMPLATE_SAIDA deve conter a seção ### Aquecimento antes de ### Liberação Miofascial."""
+    """_TEMPLATE_SAIDA deve conter ### Aquecimento antes de ### Liberação Miofascial nos dois dias."""
+    import re
     from src.generation.prompt import _TEMPLATE_SAIDA
 
-    pos_aquecimento = _TEMPLATE_SAIDA.find("### Aquecimento")
-    pos_liberacao = _TEMPLATE_SAIDA.find("### Liberação Miofascial")
-    assert pos_aquecimento != -1, "### Aquecimento não encontrado no template"
-    assert pos_aquecimento < pos_liberacao, "### Aquecimento deve aparecer antes de ### Liberação Miofascial"
+    pares = list(zip(
+        [m.start() for m in re.finditer(r"### Aquecimento", _TEMPLATE_SAIDA)],
+        [m.start() for m in re.finditer(r"### Liberação Miofascial", _TEMPLATE_SAIDA)],
+    ))
+    assert len(pares) == 2, f"Esperado 2 pares (Dia 1 e Dia 2), encontrado {len(pares)}"
+    for i, (pos_aq, pos_lib) in enumerate(pares, start=1):
+        assert pos_aq < pos_lib, f"### Aquecimento deve preceder ### Liberação Miofascial no Dia {i}"
