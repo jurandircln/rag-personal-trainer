@@ -40,6 +40,33 @@ O diferencial não é só velocidade: é rastreabilidade. Cada exercício, cada 
 
 ---
 
+## Observabilidade
+
+O Jarvis coleta métricas de desempenho do LLM e as envia ao **Supabase** (Postgres). O **Grafana Cloud** conecta ao Supabase via data source PostgreSQL e exibe um dashboard com 5 painéis:
+
+| Painel | Descrição |
+|---|---|
+| Total de Perguntas Respondidas | Contador de chamadas ao LLM |
+| Feedbacks Preenchidos pelos Usuários | Contador de feedbacks enviados |
+| Taxa de Satisfação dos Usuários com o LLM | Razão satisfeito/total feedbacks |
+| Tempo de Resposta do LLM | Série temporal do tempo de geração |
+| Score de Performance do LLM | Satisfação, velocidade e cobertura de feedback ao longo do tempo |
+
+### Setup
+
+1. Crie o banco no Supabase: execute `supabase/migrations/create_metrics_tables.sql` no SQL Editor
+2. Configure o data source PostgreSQL no Grafana Cloud (Settings → Database do Supabase)
+3. Importe o dashboard: Grafana Cloud → Dashboards → Import → `grafana/dashboard.json`
+4. Adicione `SUPABASE_URL` e `SUPABASE_KEY` aos Secrets do Streamlit Cloud
+
+### Feedback na Interface
+
+Após cada resposta gerada, o usuário vê dois botões: **👍 Satisfeito** e **👎 Não Satisfeito**. O clique registra um evento em `jarvis_feedbacks` no Supabase.
+
+As métricas são **best-effort**: se o Supabase estiver indisponível, o app continua funcionando normalmente.
+
+---
+
 ## Estrutura de Pastas
 
 ```
