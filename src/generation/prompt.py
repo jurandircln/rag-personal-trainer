@@ -47,6 +47,13 @@ _INSTRUCAO_BASE = (
     "O tempo de descanso é indicado uma única vez, após o último exercício do bloco. "
     "Máximo de 3 exercícios por bloco. "
     "Aplique conjugado SOMENTE quando o personal solicitar explicitamente.\n"
+    "Se o personal solicitar aquecimento e o contexto do aluno listar equipamentos "
+    "cardiovasculares disponíveis, gere a seção ### Aquecimento no início da sessão, "
+    "imediatamente antes de ### Liberação Miofascial. "
+    "Inclua: modalidade (ex: Esteira), duração (8–15 min) e intensidade sugerida "
+    "(leve a moderada, 60–70% FCmáx). "
+    "Se nenhum equipamento cardiovascular estiver disponível no contexto do aluno "
+    "ou o personal não solicitar aquecimento, omita completamente a seção.\n"
 )
 
 # Critérios do Método RB para divisão de treino — injetado em todo prompt
@@ -91,6 +98,11 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 ## SEMANA 1 — [nome descritivo, ex: Adaptação e Técnica]
 
 ### Dia 1 — [foco do dia]
+
+### Aquecimento  *(usar somente quando solicitado e equipamento cardiovascular disponível)*
+
+* [modalidade, ex: Esteira]
+  [duração e intensidade, ex: 10 min — velocidade 6 km/h, intensidade leve]
 
 ### Liberação Miofascial
 
@@ -163,6 +175,11 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 * Intensidade: [RPE ou %]
 
 ### Dia 2 — [foco do dia]
+
+### Aquecimento  *(usar somente quando solicitado e equipamento cardiovascular disponível)*
+
+* [modalidade, ex: Esteira]
+  [duração e intensidade, ex: 10 min — velocidade 6 km/h, intensidade leve]
 
 ### Liberação Miofascial
 

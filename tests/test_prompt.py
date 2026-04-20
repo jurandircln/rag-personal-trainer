@@ -100,3 +100,21 @@ def test_template_saida_contem_exemplo_conjugado():
 
     assert "[CONJUGADO A1]" in _TEMPLATE_SAIDA
     assert "[CONJUGADO A2]" in _TEMPLATE_SAIDA
+
+
+def test_instrucao_base_contem_regra_aquecimento():
+    """_INSTRUCAO_BASE deve conter a instrução condicional de ### Aquecimento."""
+    from src.generation.prompt import _INSTRUCAO_BASE
+
+    assert "### Aquecimento" in _INSTRUCAO_BASE
+    assert "equipamentos cardiovasculares" in _INSTRUCAO_BASE
+
+
+def test_template_saida_contem_secao_aquecimento():
+    """_TEMPLATE_SAIDA deve conter a seção ### Aquecimento antes de ### Liberação Miofascial."""
+    from src.generation.prompt import _TEMPLATE_SAIDA
+
+    pos_aquecimento = _TEMPLATE_SAIDA.find("### Aquecimento")
+    pos_liberacao = _TEMPLATE_SAIDA.find("### Liberação Miofascial")
+    assert pos_aquecimento != -1, "### Aquecimento não encontrado no template"
+    assert pos_aquecimento < pos_liberacao, "### Aquecimento deve aparecer antes de ### Liberação Miofascial"
