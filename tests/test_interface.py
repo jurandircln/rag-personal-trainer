@@ -552,3 +552,47 @@ def test_formatar_contexto_aluno_divisao_corpo_todo_posterior():
     contexto = formatar_contexto_aluno(dados)
 
     assert "Superior Posterior / Inferior Posterior (Corpo todo)" in contexto
+
+
+def test_formatar_contexto_aluno_com_cardio():
+    """Quando equipamentos cardiovasculares preenchidos, o contexto inclui a linha."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Pedro",
+        "Idade": 30,
+        "Modalidade / Esporte praticado": "musculação",
+        "Objetivo": "Hipertrofia",
+        "Dias disponíveis por semana": 4,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Livre"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        "Equipamentos cardiovasculares": ["Esteira", "Bike estacionária"],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Equipamentos cardiovasculares: Esteira, Bike estacionária" in contexto
+
+
+def test_formatar_contexto_aluno_sem_cardio():
+    """Quando equipamentos cardiovasculares é lista vazia, a linha não aparece no contexto."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Renata",
+        "Idade": 27,
+        "Modalidade / Esporte praticado": "yoga",
+        "Objetivo": "Qualidade de Vida",
+        "Dias disponíveis por semana": 3,
+        "Tempo por sessão": "45 min",
+        "Equipamentos disponíveis": ["Peso Corporal"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Iniciante",
+        "Equipamentos cardiovasculares": [],
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Equipamentos cardiovasculares" not in contexto
