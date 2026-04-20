@@ -84,3 +84,18 @@ def test_template_fortalecimento_tem_14_exercicios_por_secao():
         assert contagem >= 14, (
             f"Bloco Fortalecimento tem {contagem} exercício(s) de exemplo — esperado >= 14"
         )
+
+
+def test_instrucao_base_contem_regra_conjugado():
+    """_INSTRUCAO_BASE deve conter a instrução de notação [CONJUGADO]."""
+    from src.generation.prompt import _INSTRUCAO_BASE
+
+    assert "[CONJUGADO" in _INSTRUCAO_BASE
+
+
+def test_template_saida_contem_exemplo_conjugado():
+    """_TEMPLATE_SAIDA deve conter exemplo de bloco [CONJUGADO A1] / [CONJUGADO A2]."""
+    from src.generation.prompt import _TEMPLATE_SAIDA
+
+    assert "[CONJUGADO A1]" in _TEMPLATE_SAIDA
+    assert "[CONJUGADO A2]" in _TEMPLATE_SAIDA
