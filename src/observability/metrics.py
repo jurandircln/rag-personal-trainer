@@ -6,6 +6,7 @@ são logadas como WARNING e descartadas — o app continua normalmente.
 """
 import logging
 import os
+import threading
 from typing import Optional
 
 from supabase import create_client, Client
@@ -14,11 +15,13 @@ logger = logging.getLogger(__name__)
 
 # Singleton do cliente — inicializado na primeira chamada bem-sucedida
 _cliente: Optional[Client] = None
+_lock = threading.Lock()
 
 
 def _obter_cliente() -> Optional[Client]:
     """Retorna o cliente Supabase ou None se as variáveis não estiverem configuradas.
 
+    Usa double-checked locking para segurança em ambiente multi-thread.
     Não cacheia None nem erros: tenta reconectar a cada chamada quando
     o cliente ainda não foi inicializado com sucesso.
 
@@ -28,21 +31,24 @@ def _obter_cliente() -> Optional[Client]:
     global _cliente
     if _cliente is not None:
         return _cliente
+    with _lock:
+        if _cliente is not None:  # double-checked locking
+            return _cliente
 
-    url = os.environ.get("SUPABASE_URL", "").strip()
-    key = os.environ.get("SUPABASE_KEY", "").strip()
+        url = os.environ.get("SUPABASE_URL", "").strip()
+        key = os.environ.get("SUPABASE_KEY", "").strip()
 
-    if not url or not key:
-        logger.warning(
-            "SUPABASE_URL ou SUPABASE_KEY não configurados — métricas desativadas."
-        )
-        return None
+        if not url or not key:
+            logger.warning(
+                "SUPABASE_URL ou SUPABASE_KEY não configurados — métricas desativadas."
+            )
+            return None
 
-    try:
-        _cliente = create_client(url, key)
-        logger.debug("Cliente Supabase inicializado com sucesso.")
-    except Exception as exc:
-        logger.warning("Falha ao criar cliente Supabase: %s", exc)
+        try:
+            _cliente = create_client(url, key)
+            logger.debug("Cliente Supabase inicializado com sucesso.")
+        except Exception as exc:
+            logger.warning("Falha ao criar cliente Supabase: %s", exc)
 
     return _cliente
 

@@ -1,7 +1,15 @@
 """Testes unitários do módulo de observabilidade."""
+import logging
 from unittest.mock import MagicMock, patch
 
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def resetar_singleton(monkeypatch):
+    """Reseta o singleton _cliente antes de cada teste para garantir isolamento."""
+    import src.observability.metrics as mod
+    monkeypatch.setattr(mod, "_cliente", None)
 
 
 class TestRegistrarResposta:
@@ -15,11 +23,7 @@ class TestRegistrarResposta:
         mock_cliente = MagicMock()
         mock_cliente.table.return_value.insert.return_value.execute.return_value = None
 
-        with patch("src.observability.metrics.create_client", return_value=mock_cliente), \
-             patch("src.observability.metrics._cliente", None):
-            import src.observability.metrics as mod
-            mod._cliente = None  # garante estado limpo
-
+        with patch("src.observability.metrics.create_client", return_value=mock_cliente):
             from src.observability.metrics import registrar_resposta
             registrar_resposta(1.23)
 
@@ -33,11 +37,8 @@ class TestRegistrarResposta:
         monkeypatch.delenv("SUPABASE_URL", raising=False)
         monkeypatch.delenv("SUPABASE_KEY", raising=False)
 
-        with patch("src.observability.metrics._cliente", None):
-            import src.observability.metrics as mod
-            mod._cliente = None
-            from src.observability.metrics import registrar_resposta
-            registrar_resposta(0.5)  # não deve lançar exceção
+        from src.observability.metrics import registrar_resposta
+        registrar_resposta(0.5)  # não deve lançar exceção
 
     def test_nao_levanta_excecao_quando_insert_falha(self, monkeypatch):
         """Falha no insert é capturada silenciosamente."""
@@ -49,11 +50,7 @@ class TestRegistrarResposta:
             RuntimeError("timeout")
         )
 
-        with patch("src.observability.metrics.create_client", return_value=mock_cliente), \
-             patch("src.observability.metrics._cliente", None):
-            import src.observability.metrics as mod
-            mod._cliente = None
-
+        with patch("src.observability.metrics.create_client", return_value=mock_cliente):
             from src.observability.metrics import registrar_resposta
             registrar_resposta(0.8)  # não deve lançar exceção
 
@@ -69,11 +66,7 @@ class TestRegistrarFeedback:
         mock_cliente = MagicMock()
         mock_cliente.table.return_value.insert.return_value.execute.return_value = None
 
-        with patch("src.observability.metrics.create_client", return_value=mock_cliente), \
-             patch("src.observability.metrics._cliente", None):
-            import src.observability.metrics as mod
-            mod._cliente = None
-
+        with patch("src.observability.metrics.create_client", return_value=mock_cliente):
             from src.observability.metrics import registrar_feedback
             registrar_feedback(satisfeito=True)
 
@@ -90,11 +83,7 @@ class TestRegistrarFeedback:
         mock_cliente = MagicMock()
         mock_cliente.table.return_value.insert.return_value.execute.return_value = None
 
-        with patch("src.observability.metrics.create_client", return_value=mock_cliente), \
-             patch("src.observability.metrics._cliente", None):
-            import src.observability.metrics as mod
-            mod._cliente = None
-
+        with patch("src.observability.metrics.create_client", return_value=mock_cliente):
             from src.observability.metrics import registrar_feedback
             registrar_feedback(satisfeito=False)
 
@@ -107,8 +96,5 @@ class TestRegistrarFeedback:
         monkeypatch.delenv("SUPABASE_URL", raising=False)
         monkeypatch.delenv("SUPABASE_KEY", raising=False)
 
-        with patch("src.observability.metrics._cliente", None):
-            import src.observability.metrics as mod
-            mod._cliente = None
-            from src.observability.metrics import registrar_feedback
-            registrar_feedback(satisfeito=True)  # não deve lançar exceção
+        from src.observability.metrics import registrar_feedback
+        registrar_feedback(satisfeito=True)  # não deve lançar exceção
