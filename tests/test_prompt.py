@@ -87,10 +87,11 @@ def test_template_fortalecimento_tem_14_exercicios_por_secao():
 
 
 def test_instrucao_base_contem_regra_conjugado():
-    """_INSTRUCAO_BASE deve conter a instrução de notação [CONJUGADO]."""
+    """_INSTRUCAO_BASE deve conter a instrução de notação [CONJUGADO X1] / [CONJUGADO X2] e a regra de aplicação exclusiva."""
     from src.generation.prompt import _INSTRUCAO_BASE
 
-    assert "[CONJUGADO" in _INSTRUCAO_BASE
+    assert "[CONJUGADO X1] / [CONJUGADO X2]" in _INSTRUCAO_BASE
+    assert "Aplique conjugado SOMENTE quando o personal solicitar explicitamente" in _INSTRUCAO_BASE
 
 
 def test_template_saida_contem_exemplo_conjugado():
