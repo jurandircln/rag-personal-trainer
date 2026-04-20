@@ -3,6 +3,7 @@ import sys
 import os
 import logging
 import re
+import time
 
 from qdrant_client.http.exceptions import UnexpectedResponse
 
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__)
 from src.config.settings import Settings
 from src.retrieval.searcher import SemanticSearcher
 from src.generation.llm import RAGGenerator
+from src.observability.metrics import registrar_feedback, registrar_resposta
 
 
 # ---------------------------------------------------------------------------
@@ -132,6 +134,9 @@ if "ultimas_fontes" not in st.session_state:
 
 if "dados_aluno" not in st.session_state:
     st.session_state["dados_aluno"] = {}
+
+if "feedback_enviado" not in st.session_state:
+    st.session_state["feedback_enviado"] = False
 
 # ---------------------------------------------------------------------------
 # ESTADO 1: Anamnese
@@ -300,6 +305,7 @@ elif st.session_state["estado"] == "resposta":
             with st.spinner("🤖 Aguarde enquanto estou estudando o seu caso..."):
                 resultados = searcher.buscar(historico[0]["content"], top_k=10, max_por_fonte=3)
                 dados_aluno = st.session_state.get("dados_aluno", {})
+                inicio_geracao = time.perf_counter()
                 resposta = generator.gerar(
                     query=query_completa,
                     resultados=resultados,
@@ -308,11 +314,13 @@ elif st.session_state["estado"] == "resposta":
                     nivel=dados_aluno.get("Nível de condicionamento", ""),
                     restricoes=dados_aluno.get("Lesões ou restrições", ""),
                 )
+                registrar_resposta(tempo_segundos=time.perf_counter() - inicio_geracao)
 
             # Adiciona resposta ao histórico e armazena fontes no session_state
             historico.append({"role": "assistant", "content": resposta.texto})
             st.session_state["historico_conversa"] = historico
             st.session_state["ultimas_fontes"] = resposta.fontes
+            st.session_state["feedback_enviado"] = False
             st.rerun()
 
         except UnexpectedResponse as e:
@@ -333,6 +341,26 @@ elif st.session_state["estado"] == "resposta":
             st.error("Ocorreu um erro ao processar a pergunta. Tente novamente.")
 
     else:
+        # Botões de feedback — exibidos após cada resposta do assistente
+        ultima_resposta_assistente = next(
+            (m for m in reversed(historico) if m["role"] == "assistant"), None
+        )
+        if ultima_resposta_assistente and not st.session_state["feedback_enviado"]:
+            st.markdown("**Como você avalia esta resposta?**")
+            col_sat, col_nsat, _ = st.columns([1, 1, 4])
+            with col_sat:
+                if st.button("👍 Satisfeito", key="btn_satisfeito"):
+                    registrar_feedback(satisfeito=True)
+                    st.session_state["feedback_enviado"] = True
+                    st.rerun()
+            with col_nsat:
+                if st.button("👎 Não Satisfeito", key="btn_nao_satisfeito"):
+                    registrar_feedback(satisfeito=False)
+                    st.session_state["feedback_enviado"] = True
+                    st.rerun()
+        elif st.session_state["feedback_enviado"]:
+            st.success("Obrigado pelo feedback!")
+
         rodadas = st.session_state["rodadas_followup"]
 
         # Detecta se a última mensagem do assistente contém uma pergunta de follow-up
@@ -353,6 +381,7 @@ elif st.session_state["estado"] == "resposta":
                     historico.append({"role": "user", "content": followup.strip()})
                     st.session_state["historico_conversa"] = historico
                     st.session_state["rodadas_followup"] = rodadas + 1
+                    st.session_state["feedback_enviado"] = False
                     st.rerun()
 
         # Botão para iniciar nova consulta
@@ -361,4 +390,5 @@ elif st.session_state["estado"] == "resposta":
             st.session_state["contexto_aluno"] = ""
             st.session_state["historico_conversa"] = []
             st.session_state["rodadas_followup"] = 0
+            st.session_state["feedback_enviado"] = False
             st.rerun()
