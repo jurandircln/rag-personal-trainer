@@ -54,6 +54,10 @@ def formatar_contexto_aluno(dados: dict) -> str:
     if divisao_opcoes:
         linhas.append(f"Divisão de treino preferida: {', '.join(divisao_opcoes)}")
 
+    cardio_disponivel = ", ".join(dados.get("Equipamentos cardiovasculares", []))
+    if cardio_disponivel:
+        linhas.append(f"Equipamentos cardiovasculares: {cardio_disponivel}")
+
     return "\n".join(linhas)
 
 
@@ -200,6 +204,11 @@ if st.session_state["estado"] == "anamnese":
             ["Peso Livre", "Máquinas", "Peso Corporal", "Elásticos", "Sem Equipamento"],
             default=["Peso Corporal"],
         )
+        cardio = st.multiselect(
+            "Equipamentos cardiovasculares",
+            ["Esteira", "Bike estacionária", "Remo ergométrico", "Elíptico", "Corda de pular"],
+            default=[],
+        )
         lesoes = st.text_area(
             "Lesões ou restrições (deixe em branco se nenhuma)", height=80
         )
@@ -218,6 +227,7 @@ if st.session_state["estado"] == "anamnese":
                 "Dias disponíveis por semana": dias_semana,
                 "Tempo por sessão": tempo_sessao,
                 "Equipamentos disponíveis": equipamentos,
+                "Equipamentos cardiovasculares": cardio,
                 "Lesões ou restrições": lesoes.strip(),
                 "Nível de condicionamento": nivel,
                 "Divisão de treino": divisao_treino,

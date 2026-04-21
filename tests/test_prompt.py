@@ -84,3 +84,41 @@ def test_template_fortalecimento_tem_14_exercicios_por_secao():
         assert contagem >= 14, (
             f"Bloco Fortalecimento tem {contagem} exercício(s) de exemplo — esperado >= 14"
         )
+
+
+def test_instrucao_base_contem_regra_conjugado():
+    """_INSTRUCAO_BASE deve conter a instrução de notação [CONJUGADO X1] / [CONJUGADO X2] e a regra de aplicação exclusiva."""
+    from src.generation.prompt import _INSTRUCAO_BASE
+
+    assert "[CONJUGADO X1] / [CONJUGADO X2]" in _INSTRUCAO_BASE
+    assert "Aplique conjugado SOMENTE quando o personal solicitar explicitamente" in _INSTRUCAO_BASE
+
+
+def test_template_saida_contem_exemplo_conjugado():
+    """_TEMPLATE_SAIDA deve conter exemplo de bloco [CONJUGADO A1] / [CONJUGADO A2]."""
+    from src.generation.prompt import _TEMPLATE_SAIDA
+
+    assert "[CONJUGADO A1]" in _TEMPLATE_SAIDA
+    assert "[CONJUGADO A2]" in _TEMPLATE_SAIDA
+
+
+def test_instrucao_base_contem_regra_aquecimento():
+    """_INSTRUCAO_BASE deve conter a instrução condicional de aquecimento com condição dupla."""
+    from src.generation.prompt import _INSTRUCAO_BASE
+
+    assert "Se o personal solicitar aquecimento e o contexto do aluno listar equipamentos" in _INSTRUCAO_BASE
+    assert "omita completamente a seção" in _INSTRUCAO_BASE
+
+
+def test_template_saida_contem_secao_aquecimento():
+    """_TEMPLATE_SAIDA deve conter ### Aquecimento antes de ### Liberação Miofascial nos dois dias."""
+    import re
+    from src.generation.prompt import _TEMPLATE_SAIDA
+
+    pares = list(zip(
+        [m.start() for m in re.finditer(r"### Aquecimento", _TEMPLATE_SAIDA)],
+        [m.start() for m in re.finditer(r"### Liberação Miofascial", _TEMPLATE_SAIDA)],
+    ))
+    assert len(pares) == 2, f"Esperado 2 pares (Dia 1 e Dia 2), encontrado {len(pares)}"
+    for i, (pos_aq, pos_lib) in enumerate(pares, start=1):
+        assert pos_aq < pos_lib, f"### Aquecimento deve preceder ### Liberação Miofascial no Dia {i}"

@@ -34,12 +34,26 @@ _INSTRUCAO_BASE = (
     "Dentro da seção Fortalecimento, organize os exercícios por grupo muscular usando "
     "sub-headers #### (ex.: #### Peitoral, #### Tríceps).\n"
     "Formato obrigatório de cada exercício: duas linhas — "
-    "primeira linha: nome do exercício com bullet (-); "
+    "primeira linha: nome do exercício com bullet (*); "
     "segunda linha (indentada com 2 espaços): N séries × N–N reps OU duração em segundos. "
-    "Exemplo: - Supino reto com barra\\n  4 séries × 6–8 reps\n"
+    "Exemplo: * Supino reto com barra\\n  4 séries × 6–8 reps\n"
     "A seção '## Resumo do Aluno' deve ser um parágrafo contínuo, NÃO bullet points.\n"
     "A escolha e justificativa da divisão muscular seguem obrigatoriamente os critérios "
     "do bloco [DIVISÃO DE TREINO — MÉTODO RB] presente neste prompt.\n"
+    "Quando o personal solicitar treinos conjugados (supersets), use a notação "
+    "[CONJUGADO X1] / [CONJUGADO X2] (onde X é uma letra sequencial: A, B, C…). "
+    "Blocos com 2 exercícios = bi-set; com 3 exercícios = tri-set. "
+    "Não há descanso entre os exercícios de um mesmo bloco. "
+    "O tempo de descanso é indicado uma única vez, após o último exercício do bloco. "
+    "Máximo de 3 exercícios por bloco. "
+    "Aplique conjugado SOMENTE quando o personal solicitar explicitamente.\n"
+    "Se o personal solicitar aquecimento e o contexto do aluno listar equipamentos "
+    "cardiovasculares disponíveis, gere a seção ### Aquecimento no início da sessão, "
+    "imediatamente antes de ### Liberação Miofascial. "
+    "Inclua: modalidade (ex: Esteira), duração (8–15 min) e intensidade sugerida "
+    "(leve a moderada, 60–70% FCmáx). "
+    "Se nenhum equipamento cardiovascular estiver disponível no contexto do aluno "
+    "ou o personal não solicitar aquecimento, omita completamente a seção.\n"
 )
 
 # Critérios do Método RB para divisão de treino — injetado em todo prompt
@@ -85,6 +99,11 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 
 ### Dia 1 — [foco do dia]
 
+### Aquecimento  [usar somente quando solicitado e equipamento cardiovascular disponível]
+
+* [modalidade, ex: Esteira]
+  [duração e intensidade, ex: 10 min — velocidade 6 km/h, intensidade leve]
+
 ### Liberação Miofascial
 
 * [nome do exercício]
@@ -114,6 +133,12 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
   [N séries × N–N reps (método)]
 * [nome do exercício]
   [N séries × N–N reps (método)]
+[Quando solicitado pelo personal, inserir blocos conjugados com esta notação:]
+* [CONJUGADO A1] [nome do exercício]
+  N séries × N–N reps
+* [CONJUGADO A2] [nome do exercício]
+  N séries × N–N reps
+  Descanso após bloco A: Xs
 
 #### [Músculo Grande, ex: Dorsal]
 
@@ -150,6 +175,11 @@ por nível, como as restrições físicas foram consideradas na seleção dos ex
 * Intensidade: [RPE ou %]
 
 ### Dia 2 — [foco do dia]
+
+### Aquecimento  [usar somente quando solicitado e equipamento cardiovascular disponível]
+
+* [modalidade, ex: Esteira]
+  [duração e intensidade, ex: 10 min — velocidade 6 km/h, intensidade leve]
 
 ### Liberação Miofascial
 

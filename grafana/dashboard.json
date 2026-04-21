@@ -1,272 +1,529 @@
 {
-  "__inputs": [
+  "annotations": [
     {
-      "name": "DS_POSTGRESQL",
-      "label": "PostgreSQL (Supabase)",
-      "description": "Conexão PostgreSQL com o banco Supabase do Jarvis",
-      "type": "datasource",
-      "pluginId": "postgres",
-      "pluginName": "PostgreSQL"
+      "kind": "AnnotationQuery",
+      "spec": {
+        "builtIn": true,
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "query": {
+          "datasource": {
+            "name": "-- Grafana --"
+          },
+          "group": "grafana",
+          "kind": "DataQuery",
+          "spec": {},
+          "version": "v0"
+        }
+      }
     }
   ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "10.0.0"
-    },
-    {
-      "type": "datasource",
-      "id": "postgres",
-      "name": "PostgreSQL",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
-  "annotations": {
-    "list": []
-  },
+  "cursorSync": "Off",
   "description": "Observabilidade do Jarvis — métricas de desempenho do LLM",
   "editable": true,
-  "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
-  "id": null,
-  "links": [],
-  "panels": [
-    {
-      "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null }
-            ]
+  "elements": {
+    "panel-1": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "cfjoy0x6ljf28e"
+                    },
+                    "group": "grafana-postgresql-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "postgres",
+                      "editorMode": "code",
+                      "format": "table",
+                      "rawSql": "SELECT COUNT(*) AS value FROM jarvis_respostas"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
           }
         },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
-      "id": 1,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value"
-      },
-      "targets": [
-        {
-          "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-          "format": "table",
-          "rawSql": "SELECT COUNT(*) AS value FROM jarvis_respostas",
-          "refId": "A"
+        "description": "",
+        "id": 1,
+        "links": [],
+        "title": "Total de Perguntas Respondidas",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{ "color": "green", "value": 0 }]
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "center",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            }
+          },
+          "version": "13.1.0-24556818486"
         }
-      ],
-      "title": "Total de Perguntas Respondidas",
-      "type": "stat"
+      }
     },
-    {
-      "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null }
-            ]
+    "panel-2": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "cfjoy0x6ljf28e"
+                    },
+                    "group": "grafana-postgresql-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "postgres",
+                      "editorMode": "code",
+                      "format": "table",
+                      "rawSql": "SELECT COUNT(*) AS value FROM jarvis_feedbacks"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
           }
         },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value"
-      },
-      "targets": [
-        {
-          "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-          "format": "table",
-          "rawSql": "SELECT COUNT(*) AS value FROM jarvis_feedbacks",
-          "refId": "A"
-        }
-      ],
-      "title": "Feedbacks Preenchidos pelos Usuários",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "decimals": 3,
-          "mappings": [],
-          "max": 1,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 0.5 },
-              { "color": "green", "value": 0.8 }
-            ]
+        "description": "",
+        "id": 2,
+        "links": [],
+        "title": "Feedbacks Preenchidos pelos Usuários",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{ "color": "green", "value": 0 }]
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "center",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            }
           },
-          "unit": "percentunit"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
-      "id": 3,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value"
-      },
-      "targets": [
-        {
-          "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-          "format": "table",
-          "rawSql": "SELECT ROUND(AVG(satisfeito::int)::numeric, 3) AS value FROM jarvis_feedbacks",
-          "refId": "A"
+          "version": "13.1.0-24556818486"
         }
-      ],
-      "title": "Taxa de Satisfação dos Usuários com o LLM",
-      "type": "stat"
+      }
     },
-    {
-      "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "segundos",
-            "axisPlacement": "auto",
-            "fillOpacity": 20,
-            "gradientMode": "none",
-            "lineWidth": 2,
-            "showPoints": "auto",
-            "spanNulls": false
-          },
-          "mappings": [],
-          "unit": "s"
+    "panel-3": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "cfjoy0x6ljf28e"
+                    },
+                    "group": "grafana-postgresql-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "postgres",
+                      "editorMode": "code",
+                      "format": "table",
+                      "rawSql": "SELECT ROUND(AVG(satisfeito::int)::numeric, 3) AS value FROM jarvis_feedbacks"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
         },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
-      "id": 4,
-      "options": {
-        "legend": { "calcs": ["mean", "max"], "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "targets": [
-        {
-          "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-          "format": "time_series",
-          "rawSql": "SELECT date_trunc('minute', criado_em) AS time, AVG(tempo_resposta_segundos) AS \"Tempo Médio (s)\" FROM jarvis_respostas WHERE $__timeFilter(criado_em) GROUP BY 1 ORDER BY 1",
-          "refId": "A"
+        "description": "",
+        "id": 3,
+        "links": [],
+        "title": "Taxa de Satisfação dos Usuários com o LLM",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "thresholds" },
+                "decimals": 3,
+                "max": 1,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "red", "value": 0 },
+                    { "color": "yellow", "value": 0.5 },
+                    { "color": "green", "value": 0.8 }
+                  ]
+                },
+                "unit": "percentunit"
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "center",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": ["lastNotNull"],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            }
+          },
+          "version": "13.1.0-24556818486"
         }
-      ],
-      "title": "Tempo de Resposta do LLM",
-      "type": "timeseries"
+      }
     },
-    {
-      "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisPlacement": "auto",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "lineWidth": 2,
-            "showPoints": "auto",
-            "spanNulls": false
+    "panel-4": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "cfjoy0x6ljf28e"
+                    },
+                    "group": "grafana-postgresql-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "postgres",
+                      "editorMode": "code",
+                      "format": "time_series",
+                      "rawSql": "SELECT date_trunc('minute', criado_em) AS time, AVG(tempo_resposta_segundos) AS \"Tempo Médio (s)\" FROM jarvis_respostas WHERE $__timeFilter(criado_em) GROUP BY 1 ORDER BY 1"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 4,
+        "links": [],
+        "title": "Tempo de Resposta do LLM",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "segundos",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 20,
+                  "gradientMode": "none",
+                  "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 2,
+                  "pointSize": 5,
+                  "scaleDistribution": { "type": "linear" },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": { "group": "A", "mode": "none" },
+                  "thresholdsStyle": { "mode": "off" }
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{ "color": "green", "value": 0 }]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": { "clustering": -1, "multiLane": false },
+              "legend": {
+                "calcs": ["mean", "max"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
+            }
           },
-          "mappings": [],
-          "max": 1,
-          "min": 0
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
-      "id": 5,
-      "options": {
-        "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "none" }
-      },
-      "targets": [
-        {
-          "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-          "format": "time_series",
-          "rawSql": "SELECT date_trunc('hour', criado_em) AS time, ROUND(AVG(satisfeito::int)::numeric, 3) AS \"Taxa de Satisfação\" FROM jarvis_feedbacks WHERE $__timeFilter(criado_em) GROUP BY 1 ORDER BY 1",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-          "format": "time_series",
-          "rawSql": "SELECT date_trunc('hour', r.criado_em) AS time, ROUND(COUNT(f.id)::numeric / NULLIF(COUNT(r.id), 0), 3) AS \"Proporção c/ Feedback\" FROM jarvis_respostas r LEFT JOIN jarvis_feedbacks f ON date_trunc('hour', f.criado_em) = date_trunc('hour', r.criado_em) WHERE $__timeFilter(r.criado_em) GROUP BY 1 ORDER BY 1",
-          "refId": "B"
-        },
-        {
-          "datasource": { "type": "postgres", "uid": "${DS_POSTGRESQL}" },
-          "format": "time_series",
-          "rawSql": "SELECT date_trunc('hour', criado_em) AS time, ROUND(LEAST(1.0 / NULLIF(AVG(tempo_resposta_segundos), 0) / 2.0, 1.0)::numeric, 3) AS \"Velocidade Normalizada\" FROM jarvis_respostas WHERE $__timeFilter(criado_em) GROUP BY 1 ORDER BY 1",
-          "refId": "C"
+          "version": "13.1.0-24556818486"
         }
-      ],
-      "title": "Score de Performance do LLM",
-      "type": "timeseries"
+      }
+    },
+    "panel-5": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "cfjoy0x6ljf28e"
+                    },
+                    "group": "grafana-postgresql-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "postgres",
+                      "editorMode": "code",
+                      "format": "time_series",
+                      "rawSql": "SELECT date_trunc('hour', criado_em) AS time, ROUND(AVG(satisfeito::int)::numeric, 3) AS \"Taxa de Satisfação\" FROM jarvis_feedbacks WHERE $__timeFilter(criado_em) GROUP BY 1 ORDER BY 1"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "cfjoy0x6ljf28e"
+                    },
+                    "group": "grafana-postgresql-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "postgres",
+                      "editorMode": "code",
+                      "format": "time_series",
+                      "rawSql": "SELECT date_trunc('hour', r.criado_em) AS time, ROUND(COUNT(f.id)::numeric / NULLIF(COUNT(r.id), 0), 3) AS \"Proporção c/ Feedback\" FROM jarvis_respostas r LEFT JOIN jarvis_feedbacks f ON date_trunc('hour', f.criado_em) = date_trunc('hour', r.criado_em) WHERE $__timeFilter(r.criado_em) GROUP BY 1 ORDER BY 1"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "B"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "cfjoy0x6ljf28e"
+                    },
+                    "group": "grafana-postgresql-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "postgres",
+                      "editorMode": "code",
+                      "format": "time_series",
+                      "rawSql": "SELECT date_trunc('hour', criado_em) AS time, ROUND(LEAST(1.0 / NULLIF(AVG(tempo_resposta_segundos), 0) / 2.0, 1.0)::numeric, 3) AS \"Velocidade Normalizada\" FROM jarvis_respostas WHERE $__timeFilter(criado_em) GROUP BY 1 ORDER BY 1"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "C"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 5,
+        "links": [],
+        "title": "Score de Performance do LLM",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": { "mode": "palette-classic" },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 2,
+                  "pointSize": 5,
+                  "scaleDistribution": { "type": "linear" },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": { "group": "A", "mode": "none" },
+                  "thresholdsStyle": { "mode": "off" }
+                },
+                "max": 1,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{ "color": "green", "value": 0 }]
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": { "clustering": -1, "multiLane": false },
+              "legend": {
+                "calcs": ["mean"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": { "hideZeros": false, "mode": "multi", "sort": "none" }
+            }
+          },
+          "version": "13.1.0-24556818486"
+        }
+      }
     }
-  ],
-  "refresh": "5s",
-  "schemaVersion": 38,
+  },
+  "layout": {
+    "kind": "GridLayout",
+    "spec": {
+      "items": [
+        {
+          "kind": "GridLayoutItem",
+          "spec": {
+            "element": { "kind": "ElementReference", "name": "panel-1" },
+            "height": 8, "width": 8, "x": 0, "y": 0
+          }
+        },
+        {
+          "kind": "GridLayoutItem",
+          "spec": {
+            "element": { "kind": "ElementReference", "name": "panel-2" },
+            "height": 8, "width": 8, "x": 8, "y": 0
+          }
+        },
+        {
+          "kind": "GridLayoutItem",
+          "spec": {
+            "element": { "kind": "ElementReference", "name": "panel-3" },
+            "height": 8, "width": 8, "x": 16, "y": 0
+          }
+        },
+        {
+          "kind": "GridLayoutItem",
+          "spec": {
+            "element": { "kind": "ElementReference", "name": "panel-4" },
+            "height": 8, "width": 24, "x": 0, "y": 8
+          }
+        },
+        {
+          "kind": "GridLayoutItem",
+          "spec": {
+            "element": { "kind": "ElementReference", "name": "panel-5" },
+            "height": 8, "width": 24, "x": 0, "y": 16
+          }
+        }
+      ]
+    }
+  },
+  "links": [],
+  "liveNow": false,
+  "preload": false,
   "tags": ["jarvis", "llm", "observabilidade"],
-  "time": { "from": "now-1h", "to": "now" },
-  "timepicker": {},
-  "timezone": "browser",
+  "timeSettings": {
+    "autoRefresh": "5s",
+    "autoRefreshIntervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
+    "fiscalYearStartMonth": 0,
+    "from": "now-1h",
+    "hideTimepicker": false,
+    "timezone": "browser",
+    "to": "now"
+  },
   "title": "Jarvis — Desempenho do LLM",
-  "uid": "jarvis-llm-performance",
-  "version": 1
+  "variables": []
 }
