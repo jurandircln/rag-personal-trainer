@@ -596,3 +596,25 @@ def test_formatar_contexto_aluno_sem_cardio():
     contexto = formatar_contexto_aluno(dados)
 
     assert "Equipamentos cardiovasculares" not in contexto
+
+
+def test_formatar_contexto_aluno_sem_chave_cardio():
+    """Quando 'Equipamentos cardiovasculares' não está no dict (dados legados), campo é omitido."""
+    from src.interface.app import formatar_contexto_aluno
+
+    dados = {
+        "Nome": "Lucas",
+        "Idade": 33,
+        "Modalidade / Esporte praticado": "musculação",
+        "Objetivo": "Hipertrofia",
+        "Dias disponíveis por semana": 4,
+        "Tempo por sessão": "60 min",
+        "Equipamentos disponíveis": ["Peso Livre"],
+        "Lesões ou restrições": "",
+        "Nível de condicionamento": "Intermediário",
+        # sem chave "Equipamentos cardiovasculares"
+    }
+
+    contexto = formatar_contexto_aluno(dados)
+
+    assert "Equipamentos cardiovasculares" not in contexto
